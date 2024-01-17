@@ -3,18 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "lint": "next lint",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "db:push": "drizzle-kit push:pg",
+    "studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
     "@vercel/postgres": "^0.5.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "dotenv": "^16.3.1",
     "lucide-react": "^0.311.0",
     "next": "14.0.4",
+    "pg": "^8.11.3",
+    "postgres": "^3.4.3",
     "prettier": "^3.2.4",
     "react": "^18",
     "react-dom": "^18",
@@ -26,6 +31,8 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "drizzle-kit": "latest",
+    "drizzle-orm": "^0.29.0",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "postcss": "^8",
