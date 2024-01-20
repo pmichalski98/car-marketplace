@@ -8,7 +8,6 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
-import { FormField } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -25,20 +24,9 @@ import {
    TooltipProvider,
    TooltipTrigger,
 } from "@/components/ui/tooltip"
+import {formSchema} from "@/app/(routes)/dashboard/add-offer/formSchema";
 
 type FormData = z.infer<typeof formSchema>
-
-const formSchema = z.object({
-   title: z.string().min(1, "Wymagane jest podanie tytułu."),
-   description: z.string().min(1, "Wymagane jest podanie opisu."),
-   mileage: z.coerce.number().gte(1, "Musi wynosić 1 lub więcej."),
-   transmission: z.string(),
-   manufacture: z.string().min(1, "Wymagane jest podanie producenta."),
-   fuelType: z.string(),
-   year: z.coerce.number().gte(1900, "Musi być rokiem 1900 lub późniejszym."), // Rok produkcji
-   color: z.string().min(1, "Wymagane jest podanie koloru."),
-   price: z.coerce.number().gte(1, "Musi wynosić 1 lub więcej."),
-})
 
 function AddOfferForm() {
    const {
@@ -65,9 +53,20 @@ function AddOfferForm() {
    }, [acceptedFiles])
 
    const onSubmit: SubmitHandler<FormData> = async (formData: FormData) => {
-      console.log("on submit")
-      console.log(formData)
-      // Handle form submission logic here
+      const data = new FormData();
+      filePreviews.forEach(file => {
+      data.append('images', file)
+      })
+      Object.entries(formData).forEach(([key, value]) => {
+         console.log(key,value)
+         data.append(key,String(value));
+      })
+      console.log(data)
+      await fetch("/api/add-offer", {
+         method: "POST",
+         headers: {},
+         body: data,
+      })
    }
 
    return (
