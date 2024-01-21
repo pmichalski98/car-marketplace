@@ -24,7 +24,7 @@ import {
    TooltipProvider,
    TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { formSchema } from "@/app/(routes)/dashboard/add-offer/formSchema"
+import { formSchema } from "@/app/(routes)/dashboard/offer-create/formSchema"
 
 type FormData = z.infer<typeof formSchema>
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs"
 import { PrismaClient } from "@prisma/client"
 
-import { formSchema } from "@/app/(routes)/dashboard/add-offer/formSchema"
+import { formSchema } from "@/app/(routes)/dashboard/offer-create/formSchema"
 import { addImagesToS3 } from "@/app/api/addImagesToS3"
 
 export async function POST(req: Request) {
