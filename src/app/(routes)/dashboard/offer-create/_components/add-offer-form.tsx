@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AlertCircle } from "lucide-react"
+import { FileWithPath, useDropzone } from "react-dropzone"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -23,8 +24,6 @@ import {
    TooltipProvider,
    TooltipTrigger,
 } from "@/components/ui/tooltip"
-
-import DropzoneField from "./dropzone-field"
 import { formSchema } from "@/app/(routes)/dashboard/offer-create/formSchema"
 
 type FormData = z.infer<typeof formSchema>
@@ -42,7 +41,17 @@ function AddOfferForm() {
       reValidateMode: "onSubmit",
    })
 
-   const [filePreviews, setFilePreviews] = useState<string[]>([])
+   const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
+      useDropzone({
+         maxFiles: 8,
+      })
+
+   const [filePreviews, setFilePreviews] = useState<FileWithPath[]>([])
+
+   useEffect(() => {
+      // Update file previews when acceptedFiles change
+      setFilePreviews((prev) => [...prev, ...acceptedFiles])
+   }, [acceptedFiles])
 
    const onSubmit: SubmitHandler<FormData> = async (formData: FormData) => {
       const data = new FormData()
@@ -72,8 +81,30 @@ function AddOfferForm() {
          noValidate
          className="flex w-full max-w-xl flex-col gap-5 pt-6"
       >
-         <DropzoneField filePreviews={filePreviews} setFilePreviews={setFilePreviews} />
-
+         <div
+            {...getRootProps()}
+            className={`flex h-28 items-center justify-center rounded-md border-2 border-dashed p-4 ${
+               isDragActive ? "bg-gray-100" : ""
+            }`}
+         >
+            <input {...getInputProps({ multiple: true, required: true })} />
+            <p>
+               Przeciągnij i upuść niektóre pliki tutaj lub kliknij, aby wybrać
+               pliki
+            </p>
+         </div>
+         {filePreviews.length > 0 && (
+            <div>
+               <p>Przegląd plików:</p>
+               <ul>
+                  {filePreviews.map((file: FileWithPath) => (
+                     <li key={file.path}>
+                        {file.path} - {file.size} bytes
+                     </li>
+                  ))}
+               </ul>
+            </div>
+         )}
          <div className={"relative"}>
             <Label htmlFor="title">Tytuł</Label>
             <Input
