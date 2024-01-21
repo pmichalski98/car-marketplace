@@ -25,6 +25,11 @@ import {
    TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { formSchema } from "@/app/(routes)/dashboard/offer-create/formSchema"
+<<<<<<< HEAD
+=======
+
+import DropzoneField from "./dropzone-field"
+>>>>>>> parent of 76272b2 (Revert "fix: git conflicts")
 
 type FormData = z.infer<typeof formSchema>
 
@@ -81,6 +86,7 @@ function AddOfferForm() {
          noValidate
          className="flex w-full max-w-xl flex-col gap-5 pt-6"
       >
+<<<<<<< HEAD
          <div
             {...getRootProps()}
             className={`flex h-28 items-center justify-center rounded-md border-2 border-dashed p-4 ${
@@ -105,6 +111,13 @@ function AddOfferForm() {
                </ul>
             </div>
          )}
+=======
+         <DropzoneField
+            filePreviews={filePreviews}
+            setFilePreviews={setFilePreviews}
+         />
+
+>>>>>>> parent of 76272b2 (Revert "fix: git conflicts")
          <div className={"relative"}>
             <Label htmlFor="title">Tytuł</Label>
             <Input
