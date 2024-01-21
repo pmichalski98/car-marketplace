@@ -23,28 +23,18 @@ import {
    TooltipProvider,
    TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { formSchema } from "@/app/(routes)/dashboard/offer-create/formSchema"
 
 import DropzoneField from "./dropzone-field"
 
 type FormData = z.infer<typeof formSchema>
-
-const formSchema = z.object({
-   title: z.string().min(1, "Wymagane jest podanie tytułu."),
-   description: z.string().min(1, "Wymagane jest podanie opisu."),
-   mileage: z.coerce.number().gte(1, "Musi wynosić 1 lub więcej."),
-   transmission: z.string(),
-   manufacture: z.string().min(1, "Wymagane jest podanie producenta."),
-   fuelType: z.string(),
-   year: z.coerce.number().gte(1900, "Musi być rokiem 1900 lub późniejszym."), // Rok produkcji
-   color: z.string().min(1, "Wymagane jest podanie koloru."),
-   price: z.coerce.number().gte(1, "Musi wynosić 1 lub więcej."),
-})
 
 function AddOfferForm() {
    const {
       register,
       handleSubmit,
       control,
+      reset,
       formState: { errors, isSubmitting },
    } = useForm<FormData>({
       resolver: zodResolver(formSchema),
@@ -55,8 +45,25 @@ function AddOfferForm() {
    const [filePreviews, setFilePreviews] = useState<string[]>([])
 
    const onSubmit: SubmitHandler<FormData> = async (formData: FormData) => {
-      console.log(formData)
-      // Handle form submission logic here
+      const data = new FormData()
+
+      filePreviews.forEach((file) => {
+         data.append("images", file)
+      })
+
+      Object.entries(formData).forEach(([key, value]) => {
+         console.log(key, value)
+         data.append(key, String(value))
+      })
+
+      const res = await fetch("/api/add-offer", {
+         method: "POST",
+         body: data,
+      })
+      if (res.ok) {
+         reset()
+         // redirect probably
+      }
    }
 
    return (
@@ -65,7 +72,10 @@ function AddOfferForm() {
          noValidate
          className="flex w-full max-w-xl flex-col gap-5 pt-6"
       >
-         <DropzoneField filePreviews={filePreviews} setFilePreviews={setFilePreviews} />
+         <DropzoneField
+            filePreviews={filePreviews}
+            setFilePreviews={setFilePreviews}
+         />
 
          <div className={"relative"}>
             <Label htmlFor="title">Tytuł</Label>
@@ -147,16 +157,16 @@ function AddOfferForm() {
                autoCapitalize="none"
                autoCorrect="off"
                disabled={isSubmitting}
-               {...register("manufacture")}
+               {...register("manufacturer")}
             />
-            {errors.manufacture && (
+            {errors.manufacturer && (
                <TooltipProvider>
                   <Tooltip>
                      <TooltipTrigger className="absolute bottom-2 right-3 text-red-500">
                         <AlertCircle />
                      </TooltipTrigger>
                      <TooltipContent>
-                        <p>{errors.manufacture.message}</p>
+                        <p>{errors.manufacturer.message}</p>
                      </TooltipContent>
                   </Tooltip>
                </TooltipProvider>
@@ -241,16 +251,16 @@ function AddOfferForm() {
                autoCapitalize="none"
                autoCorrect="off"
                disabled={isSubmitting}
-               {...register("year")}
+               {...register("prodYear")}
             />
-            {errors.year && (
+            {errors.prodYear && (
                <TooltipProvider>
                   <Tooltip>
                      <TooltipTrigger className="absolute bottom-2 right-3 text-red-500">
                         <AlertCircle />
                      </TooltipTrigger>
                      <TooltipContent>
-                        <p>{errors.year.message}</p>
+                        <p>{errors.prodYear.message}</p>
                      </TooltipContent>
                   </Tooltip>
                </TooltipProvider>
@@ -306,7 +316,7 @@ function AddOfferForm() {
          </div>
          {/* Add more fields as needed */}
 
-         <Button>Powtierdź</Button>
+         <Button>Potwierdź</Button>
       </form>
    )
 }
