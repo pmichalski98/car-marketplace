@@ -24,7 +24,7 @@ import {
    TooltipProvider,
    TooltipTrigger,
 } from "@/components/ui/tooltip"
-import {formSchema} from "@/app/(routes)/dashboard/add-offer/formSchema";
+import { formSchema } from "@/app/(routes)/dashboard/add-offer/formSchema"
 
 type FormData = z.infer<typeof formSchema>
 
@@ -33,6 +33,7 @@ function AddOfferForm() {
       register,
       handleSubmit,
       control,
+      reset,
       formState: { errors, isSubmitting },
    } = useForm<FormData>({
       resolver: zodResolver(formSchema),
@@ -53,20 +54,25 @@ function AddOfferForm() {
    }, [acceptedFiles])
 
    const onSubmit: SubmitHandler<FormData> = async (formData: FormData) => {
-      const data = new FormData();
-      filePreviews.forEach(file => {
-      data.append('images', file)
+      const data = new FormData()
+
+      filePreviews.forEach((file) => {
+         data.append("images", file)
       })
+
       Object.entries(formData).forEach(([key, value]) => {
-         console.log(key,value)
-         data.append(key,String(value));
+         console.log(key, value)
+         data.append(key, String(value))
       })
-      console.log(data)
-      await fetch("/api/add-offer", {
+
+      const res = await fetch("/api/add-offer", {
          method: "POST",
-         headers: {},
          body: data,
       })
+      if (res.ok) {
+         reset()
+         // redirect probably
+      }
    }
 
    return (
@@ -179,16 +185,16 @@ function AddOfferForm() {
                autoCapitalize="none"
                autoCorrect="off"
                disabled={isSubmitting}
-               {...register("manufacture")}
+               {...register("manufacturer")}
             />
-            {errors.manufacture && (
+            {errors.manufacturer && (
                <TooltipProvider>
                   <Tooltip>
                      <TooltipTrigger className="absolute bottom-2 right-3 text-red-500">
                         <AlertCircle />
                      </TooltipTrigger>
                      <TooltipContent>
-                        <p>{errors.manufacture.message}</p>
+                        <p>{errors.manufacturer.message}</p>
                      </TooltipContent>
                   </Tooltip>
                </TooltipProvider>
@@ -273,16 +279,16 @@ function AddOfferForm() {
                autoCapitalize="none"
                autoCorrect="off"
                disabled={isSubmitting}
-               {...register("year")}
+               {...register("prodYear")}
             />
-            {errors.year && (
+            {errors.prodYear && (
                <TooltipProvider>
                   <Tooltip>
                      <TooltipTrigger className="absolute bottom-2 right-3 text-red-500">
                         <AlertCircle />
                      </TooltipTrigger>
                      <TooltipContent>
-                        <p>{errors.year.message}</p>
+                        <p>{errors.prodYear.message}</p>
                      </TooltipContent>
                   </Tooltip>
                </TooltipProvider>
@@ -338,7 +344,7 @@ function AddOfferForm() {
          </div>
          {/* Add more fields as needed */}
 
-         <Button>Powtierdź</Button>
+         <Button>Potwierdź</Button>
       </form>
    )
 }

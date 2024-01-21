@@ -1,10 +1,7 @@
 import { randomUUID } from "node:crypto"
 import { S3 } from "aws-sdk"
 
-async function addImage(formData: FormData) {
-   "use server"
-   const images: File[] | null = formData.get("file") as unknown as File[]
-   console.log(images)
+export async function addImagesToS3(images: File[]) {
    const s3 = new S3({
       credentials: {
          accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
@@ -12,20 +9,9 @@ async function addImage(formData: FormData) {
       },
       region: "eu-north-1",
    })
-   const imageId = randomUUID()
-   const s3Promises = images?.map(async (imageFile) => {
-      const buffer = await imageFile.arrayBuffer()
-      const fileBlob = Buffer.from(buffer)
-      return s3.putObject({
-         Body: fileBlob,
-         Bucket: process.env.AWS_S3_BUCKET_NAME!,
-         Key: imageId,
-         ContentType: "image/gif",
-      })
-   })
-
-   await Promise.all(
+   return Promise.all(
       images?.map(async (imageFile) => {
+         const imageId = randomUUID()
          const arrayBuffer = await imageFile.arrayBuffer()
          const buffer = Buffer.from(arrayBuffer)
          await s3
@@ -36,6 +22,7 @@ async function addImage(formData: FormData) {
                ContentType: "image/gif",
             })
             .promise()
+         return imageId
       })
    )
 }
