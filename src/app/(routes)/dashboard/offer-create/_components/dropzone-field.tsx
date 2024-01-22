@@ -1,16 +1,21 @@
 "use client"
 
-import { Dispatch, SetStateAction, useEffect } from "react"
-import Image from "next/image"
-import { X } from "lucide-react"
+import { Dispatch, useEffect } from "react"
+import { DndContext } from "@dnd-kit/core"
+import {
+   arrayMove,
+   rectSwappingStrategy,
+   SortableContext,
+} from "@dnd-kit/sortable"
+
 import { FileWithPath, useDropzone } from "react-dropzone"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import SortableItem from "./sortable-item"
 
 interface DropzoneFieldProps {
    setImageFile: Dispatch<SetStateAction<File[]>>
    imageFile: File[]
+
 }
 
 function DropzoneField({ setImageFile, imageFile }: DropzoneFieldProps) {
@@ -41,8 +46,18 @@ function DropzoneField({ setImageFile, imageFile }: DropzoneFieldProps) {
       setImageFile((prev) => [...prev, ...acceptedFiles])
    }, [acceptedFiles])
 
-   const handlePreviewImageRemove = (fileName: string) => {
-      setImageFile((prev) => prev.filter((item) => fileName !== item.name))
+   const handleDragEnd = (event: { active: any; over: any }) => {
+      const { active, over } = event
+
+      if (active.id !== over.id) {
+         setFilePreviews((items) => {
+            const oldIndex = items.indexOf(active.id)
+            const newIndex = items.indexOf(over.id)
+
+            return arrayMove(items, oldIndex, newIndex)
+         })
+      }
+
    }
 
    return (
@@ -50,41 +65,23 @@ function DropzoneField({ setImageFile, imageFile }: DropzoneFieldProps) {
          {imageFile.length > 0 && (
             <div>
                <p>Dodane zdjęcia:</p>
-               <ul className="flex flex-wrap gap-5">
-                  {imageFile.map((file, index) => (
-                     <li key={file.size} className="relative">
-                        <Image
-                           src={URL.createObjectURL(file)}
-                           alt="added image"
-                           height={200}
-                           width={0}
-                           style={{ width: "auto" }}
-                        />
-                        <Button
-                           variant={"destructive"}
-                           size={"sm"}
-                           className="absolute right-3 top-3 size-7 p-1"
-                           onClick={() => handlePreviewImageRemove(file.name)}
-                        >
-                           <X />
-                        </Button>
-                        {index === 0 && (
-                           <Badge
-                              className="absolute left-2 top-2"
-                              variant={"destructive"}
-                           >
-                              Zdjęcie główne
-                           </Badge>
-                        )}
-                        <Badge
-                           className="absolute bottom-2 left-2"
-                           variant={"secondary"}
-                        >
-                           Zdjęcie będzie pokazane jako {index + 1}
-                        </Badge>
-                     </li>
-                  ))}
-               </ul>
+               <DndContext onDragEnd={handleDragEnd}>
+                  <SortableContext
+                     items={filePreviews}
+                     strategy={rectSwappingStrategy}
+                  >
+                     <div className="flex w-full flex-wrap justify-center">
+                        {filePreviews.map((path, index) => (
+                           <SortableItem
+                              key={path}
+                              path={path}
+                              index={index}
+                              setFilePreviews={setFilePreviews}
+                           />
+                        ))}
+                     </div>
+                  </SortableContext>
+               </DndContext>
             </div>
          )}
          <div
