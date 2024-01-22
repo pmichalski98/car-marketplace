@@ -28,25 +28,43 @@ export async function POST(req: Request) {
    const formData = Object.fromEntries(data)
    const parsedData = formSchema.parse(formData)
 
+   let imageIds: `${string}-${string}-${string}-${string}-${string}`[]
+
    try {
-      const imageIds = await addImagesToS3(imageFiles as File[])
-      const carOffer = await prisma.carOffer.create({
-         data: {
-            userId,
-            ...parsedData,
-         },
-      })
-      if (!carOffer) return
-      const imagesRes = await Promise.all(
-         imageIds.map((imageId) => {
-            return prisma.images.create({
-               data: { id: imageId, carOfferId: carOffer.id },
-            })
-         })
-      )
-      if (!imagesRes) throw new Error("Error adding images to database")
+      imageIds = await addImagesToS3(imageFiles as File[])
    } catch (e) {
       throw new Error("Error adding images to S3 Bucket")
    }
+   try {
+      await prisma.$transaction(async (prisma) => {
+         const carOffer = await prisma.carOffer.create({
+            data: {
+               ...parsedData,
+               userId,
+            },
+         })
+
+         const imageRecords: {
+            id: `${string}-${string}-${string}-${string}-${string}`
+            carOfferId: string
+         }[] = imageIds.map((imageId) => {
+            return {
+               id: imageId,
+               carOfferId: carOffer.id,
+            }
+         })
+
+         await prisma.images.createMany({
+            data: imageRecords,
+         })
+         if (!carOffer) {
+            throw new Error("Error creating CarOffer with images.")
+         }
+      })
+   } catch (e) {
+      console.error(e)
+      throw new Error("Error creating CarOffer with images")
+   }
+
    return NextResponse.json({ status: 201 })
 }

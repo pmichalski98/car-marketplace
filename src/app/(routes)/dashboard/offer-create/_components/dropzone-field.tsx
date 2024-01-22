@@ -1,4 +1,6 @@
-import { useEffect } from "react"
+"use client"
+
+import { Dispatch, SetStateAction, useEffect } from "react"
 import Image from "next/image"
 import { X } from "lucide-react"
 import { FileWithPath, useDropzone } from "react-dropzone"
@@ -7,14 +9,14 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 interface DropzoneFieldProps {
-   setFilePreviews: React.Dispatch<React.SetStateAction<string[]>>
-   filePreviews: string[]
+   setImageFile: Dispatch<SetStateAction<File[]>>
+   imageFile: File[]
 }
 
-function DropzoneField({ setFilePreviews, filePreviews }: DropzoneFieldProps) {
+function DropzoneField({ setImageFile, imageFile }: DropzoneFieldProps) {
    const typeValidator = (file: FileWithPath) => {
       if (file.type.startsWith("image/")) {
-         if (file.size > 3 * 1024 * 1024) {
+         if (file.size > 10 * 1024 * 1024) {
             return {
                code: "size-too-large",
                message: "Image file is larger than 3MB",
@@ -36,26 +38,23 @@ function DropzoneField({ setFilePreviews, filePreviews }: DropzoneFieldProps) {
 
    useEffect(() => {
       // Update file previews when acceptedFiles change
-      setFilePreviews((prev) => [
-         ...prev,
-         ...acceptedFiles.map((file) => URL.createObjectURL(file)),
-      ])
+      setImageFile((prev) => [...prev, ...acceptedFiles])
    }, [acceptedFiles])
 
-   const handlePreviewImageRemove = (path: string) => {
-      setFilePreviews((prev) => prev.filter((item) => path !== item))
+   const handlePreviewImageRemove = (fileName: string) => {
+      setImageFile((prev) => prev.filter((item) => fileName !== item.name))
    }
 
    return (
       <>
-         {filePreviews.length > 0 && (
+         {imageFile.length > 0 && (
             <div>
                <p>Dodane zdjęcia:</p>
                <ul className="flex flex-wrap gap-5">
-                  {filePreviews.map((path, index) => (
-                     <li key={path} className="relative">
+                  {imageFile.map((file, index) => (
+                     <li key={file.size} className="relative">
                         <Image
-                           src={path}
+                           src={URL.createObjectURL(file)}
                            alt="added image"
                            height={200}
                            width={0}
@@ -65,7 +64,7 @@ function DropzoneField({ setFilePreviews, filePreviews }: DropzoneFieldProps) {
                            variant={"destructive"}
                            size={"sm"}
                            className="absolute right-3 top-3 size-7 p-1"
-                           onClick={() => handlePreviewImageRemove(path)}
+                           onClick={() => handlePreviewImageRemove(file.name)}
                         >
                            <X />
                         </Button>

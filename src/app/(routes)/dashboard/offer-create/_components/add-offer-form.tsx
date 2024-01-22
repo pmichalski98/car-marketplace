@@ -1,6 +1,6 @@
 "use client"
 
-import {  useState } from "react"
+import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AlertCircle } from "lucide-react"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
@@ -24,6 +24,7 @@ import {
    TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { formSchema } from "@/app/(routes)/dashboard/offer-create/formSchema"
+
 import DropzoneField from "./dropzone-field"
 
 type FormData = z.infer<typeof formSchema>
@@ -41,12 +42,11 @@ function AddOfferForm() {
       reValidateMode: "onSubmit",
    })
 
-   const [filePreviews, setFilePreviews] = useState<string[]>([])
+   const [imageFile, setImageFile] = useState<File[]>([])
 
    const onSubmit: SubmitHandler<FormData> = async (formData: FormData) => {
       const data = new FormData()
-
-      filePreviews.forEach((file) => {
+      imageFile.forEach((file) => {
          data.append("images", file)
       })
 
@@ -71,9 +71,8 @@ function AddOfferForm() {
          noValidate
          className="flex w-full max-w-xl flex-col gap-5 pt-6"
       >
+         <DropzoneField imageFile={imageFile} setImageFile={setImageFile} />
 
-<DropzoneField filePreviews={filePreviews} setFilePreviews={setFilePreviews} />
-         
          <div className={"relative"}>
             <Label htmlFor="title">Tytuł</Label>
             <Input
