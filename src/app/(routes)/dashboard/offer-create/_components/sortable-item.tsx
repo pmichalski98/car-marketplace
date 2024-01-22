@@ -10,12 +10,12 @@ import { Button } from "@/components/ui/button"
 const SortableItem = ({
    index,
    path,
-   setFilePreviews,
+   setImagePreviews,
    ...props
 }: {
    path: string
    index: number
-   setFilePreviews: Dispatch<React.SetStateAction<string[]>>
+   setImagePreviews: Dispatch<React.SetStateAction<string[]>>
 }) => {
    const { attributes, listeners, setNodeRef, transform, transition } =
       useSortable({ id: path })
@@ -25,7 +25,7 @@ const SortableItem = ({
       transition: transition || undefined,
    }
    const handlePreviewImageRemove = (path: string) => {
-      setFilePreviews((prev) => prev.filter((item) => path !== item))
+      setImagePreviews((prev) => prev.filter((item) => path !== item))
    }
 
    return (

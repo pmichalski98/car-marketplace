@@ -1,5 +1,3 @@
-"use client"
-
 import { Dispatch, useEffect } from "react"
 import { DndContext } from "@dnd-kit/core"
 import {
@@ -7,21 +5,22 @@ import {
    rectSwappingStrategy,
    SortableContext,
 } from "@dnd-kit/sortable"
-
 import { FileWithPath, useDropzone } from "react-dropzone"
 
 import SortableItem from "./sortable-item"
 
 interface DropzoneFieldProps {
-   setImageFile: Dispatch<SetStateAction<File[]>>
-   imageFile: File[]
-
+   setImagePreviews: Dispatch<React.SetStateAction<string[]>>
+   imagePreviews: string[]
 }
 
-function DropzoneField({ setImageFile, imageFile }: DropzoneFieldProps) {
+function DropzoneField({
+   setImagePreviews,
+   imagePreviews,
+}: DropzoneFieldProps) {
    const typeValidator = (file: FileWithPath) => {
       if (file.type.startsWith("image/")) {
-         if (file.size > 10 * 1024 * 1024) {
+         if (file.size > 3 * 1024 * 1024) {
             return {
                code: "size-too-large",
                message: "Image file is larger than 3MB",
@@ -43,40 +42,42 @@ function DropzoneField({ setImageFile, imageFile }: DropzoneFieldProps) {
 
    useEffect(() => {
       // Update file previews when acceptedFiles change
-      setImageFile((prev) => [...prev, ...acceptedFiles])
+      setImagePreviews((prev) => [
+         ...prev,
+         ...acceptedFiles.map((file) => URL.createObjectURL(file)),
+      ])
    }, [acceptedFiles])
 
    const handleDragEnd = (event: { active: any; over: any }) => {
       const { active, over } = event
 
       if (active.id !== over.id) {
-         setFilePreviews((items) => {
+         setImagePreviews((items) => {
             const oldIndex = items.indexOf(active.id)
             const newIndex = items.indexOf(over.id)
 
             return arrayMove(items, oldIndex, newIndex)
          })
       }
-
    }
 
    return (
       <>
-         {imageFile.length > 0 && (
+         {imagePreviews.length > 0 && (
             <div>
                <p>Dodane zdjęcia:</p>
                <DndContext onDragEnd={handleDragEnd}>
                   <SortableContext
-                     items={filePreviews}
+                     items={imagePreviews}
                      strategy={rectSwappingStrategy}
                   >
                      <div className="flex w-full flex-wrap justify-center">
-                        {filePreviews.map((path, index) => (
+                        {imagePreviews.map((path, index) => (
                            <SortableItem
                               key={path}
                               path={path}
                               index={index}
-                              setFilePreviews={setFilePreviews}
+                              setImagePreviews={setImagePreviews}
                            />
                         ))}
                      </div>

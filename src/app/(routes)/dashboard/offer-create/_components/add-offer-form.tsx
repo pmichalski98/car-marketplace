@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { String } from "aws-sdk/clients/batch"
 import { AlertCircle } from "lucide-react"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { urlToFile } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -42,13 +44,21 @@ function AddOfferForm() {
       reValidateMode: "onSubmit",
    })
 
-   const [imageFile, setImageFile] = useState<File[]>([])
+   const [imagePreviews, setImagePreviews] = useState<string[]>([])
 
    const onSubmit: SubmitHandler<FormData> = async (formData: FormData) => {
       const data = new FormData()
-      imageFile.forEach((file) => {
-         data.append("images", file)
-      })
+
+      await Promise.all(
+         imagePreviews.map(async (url) => {
+            const file = await urlToFile(url)
+
+            if (file) {
+               // Append the file to the FormData outside of the async block
+               data.append("images", file)
+            }
+         })
+      )
 
       Object.entries(formData).forEach(([key, value]) => {
          console.log(key, value)
@@ -68,8 +78,8 @@ function AddOfferForm() {
    return (
       <>
          <DropzoneField
-            filePreviews={filePreviews}
-            setFilePreviews={setFilePreviews}
+            imagePreviews={imagePreviews}
+            setImagePreviews={setImagePreviews}
          />
          <form
             onSubmit={handleSubmit(onSubmit)}
@@ -277,7 +287,6 @@ function AddOfferForm() {
                   autoCorrect="off"
                   disabled={isSubmitting}
                   {...register("color")}
-
                />
                {errors.color && (
                   <TooltipProvider>
