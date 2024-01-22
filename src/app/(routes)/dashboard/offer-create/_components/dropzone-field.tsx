@@ -1,3 +1,5 @@
+"use client"
+
 import { Dispatch, useEffect } from "react"
 import { DndContext } from "@dnd-kit/core"
 import {
@@ -5,19 +7,21 @@ import {
    rectSwappingStrategy,
    SortableContext,
 } from "@dnd-kit/sortable"
+
 import { FileWithPath, useDropzone } from "react-dropzone"
 
 import SortableItem from "./sortable-item"
 
 interface DropzoneFieldProps {
-   setFilePreviews: Dispatch<React.SetStateAction<string[]>>
-   filePreviews: string[]
+   setImageFile: Dispatch<SetStateAction<File[]>>
+   imageFile: File[]
+
 }
 
-function DropzoneField({ setFilePreviews, filePreviews }: DropzoneFieldProps) {
+function DropzoneField({ setImageFile, imageFile }: DropzoneFieldProps) {
    const typeValidator = (file: FileWithPath) => {
       if (file.type.startsWith("image/")) {
-         if (file.size > 3 * 1024 * 1024) {
+         if (file.size > 10 * 1024 * 1024) {
             return {
                code: "size-too-large",
                message: "Image file is larger than 3MB",
@@ -39,10 +43,7 @@ function DropzoneField({ setFilePreviews, filePreviews }: DropzoneFieldProps) {
 
    useEffect(() => {
       // Update file previews when acceptedFiles change
-      setFilePreviews((prev) => [
-         ...prev,
-         ...acceptedFiles.map((file) => URL.createObjectURL(file)),
-      ])
+      setImageFile((prev) => [...prev, ...acceptedFiles])
    }, [acceptedFiles])
 
    const handleDragEnd = (event: { active: any; over: any }) => {
@@ -56,11 +57,12 @@ function DropzoneField({ setFilePreviews, filePreviews }: DropzoneFieldProps) {
             return arrayMove(items, oldIndex, newIndex)
          })
       }
+
    }
 
    return (
       <>
-         {filePreviews.length > 0 && (
+         {imageFile.length > 0 && (
             <div>
                <p>Dodane zdjęcia:</p>
                <DndContext onDragEnd={handleDragEnd}>

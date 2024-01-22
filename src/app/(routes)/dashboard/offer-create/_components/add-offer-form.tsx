@@ -42,12 +42,11 @@ function AddOfferForm() {
       reValidateMode: "onSubmit",
    })
 
-   const [filePreviews, setFilePreviews] = useState<string[]>([])
+   const [imageFile, setImageFile] = useState<File[]>([])
 
    const onSubmit: SubmitHandler<FormData> = async (formData: FormData) => {
       const data = new FormData()
-
-      filePreviews.forEach((file) => {
+      imageFile.forEach((file) => {
          data.append("images", file)
       })
 
@@ -278,6 +277,7 @@ function AddOfferForm() {
                   autoCorrect="off"
                   disabled={isSubmitting}
                   {...register("color")}
+
                />
                {errors.color && (
                   <TooltipProvider>
