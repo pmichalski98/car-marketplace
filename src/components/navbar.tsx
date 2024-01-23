@@ -1,7 +1,14 @@
 "use client"
 
 import Link from "next/link"
-import { Menu, Search, SearchCheck, Star, TagsIcon } from "lucide-react"
+import {
+   ChevronDown,
+   Menu,
+   Search,
+   SearchCheck,
+   Star,
+   TagsIcon,
+} from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -22,6 +29,7 @@ import {
    navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
+import HydrationWrapper from "./hydration-wrapper"
 import { Button, buttonVariants } from "./ui/button"
 import { Input } from "./ui/input"
 import Logo from "./ui/logo"
@@ -61,66 +69,74 @@ function Navbar() {
                         Zaloguj się
                      </Link>
                   </div>
-                  <DropdownMenu>
-                     <DropdownMenuTrigger>
-                        <Button
-                           variant={"ghost"}
-                           className="h-auto p-2 text-white"
-                        >
+                  <HydrationWrapper
+                     placeholder={
+                        <div className="h-auto p-2 text-white">
                            <Menu />
-                        </Button>
-                     </DropdownMenuTrigger>
-                     <DropdownMenuContent className="w-[300px]">
-                        <DropdownMenuLabel className="text-xl">
-                           Menu
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                           className="flex items-center gap-2 font-medium"
-                           asChild
-                        >
-                           <Link href={"/"}>
-                              <Star /> Ulubione
-                           </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                           className="flex items-center gap-2 font-medium"
-                           asChild
-                        >
-                           <Link href={"/"}>
-                              <SearchCheck /> Zapisane wyszukiwania
-                           </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                           className="flex items-center gap-2 font-medium"
-                           asChild
-                        >
-                           <Link href={"/"}>
-                              <TagsIcon /> Moje ogłoszenia
-                           </Link>
-                        </DropdownMenuItem>
-                        <div className="flex flex-col items-center gap-2 py-10">
-                           <Link
-                              className={cn(
-                                 buttonVariants({ variant: "outline" }),
-                                 "w-full max-w-52 text-center"
-                              )}
-                              href={"/"}
-                           >
-                              Zaloguj się
-                           </Link>
-                           <Link
-                              className={cn(
-                                 buttonVariants({ variant: "default" }),
-                                 "w-full max-w-52 text-center"
-                              )}
-                              href={"/"}
-                           >
-                              Załóż konto
-                           </Link>
                         </div>
-                     </DropdownMenuContent>
-                  </DropdownMenu>
+                     }
+                  >
+                     <DropdownMenu>
+                        <DropdownMenuTrigger>
+                           <Button
+                              variant={"ghost"}
+                              className="h-auto p-2 text-white"
+                           >
+                              <Menu />
+                           </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-[300px]">
+                           <DropdownMenuLabel className="text-xl">
+                              Menu
+                           </DropdownMenuLabel>
+                           <DropdownMenuSeparator />
+                           <DropdownMenuItem
+                              className="flex items-center gap-2 font-medium"
+                              asChild
+                           >
+                              <Link href={"/"}>
+                                 <Star /> Ulubione
+                              </Link>
+                           </DropdownMenuItem>
+                           <DropdownMenuItem
+                              className="flex items-center gap-2 font-medium"
+                              asChild
+                           >
+                              <Link href={"/"}>
+                                 <SearchCheck /> Zapisane wyszukiwania
+                              </Link>
+                           </DropdownMenuItem>
+                           <DropdownMenuItem
+                              className="flex items-center gap-2 font-medium"
+                              asChild
+                           >
+                              <Link href={"/"}>
+                                 <TagsIcon /> Moje ogłoszenia
+                              </Link>
+                           </DropdownMenuItem>
+                           <div className="flex flex-col items-center gap-2 py-10">
+                              <Link
+                                 className={cn(
+                                    buttonVariants({ variant: "outline" }),
+                                    "w-full max-w-52 text-center"
+                                 )}
+                                 href={"/"}
+                              >
+                                 Zaloguj się
+                              </Link>
+                              <Link
+                                 className={cn(
+                                    buttonVariants({ variant: "default" }),
+                                    "w-full max-w-52 text-center"
+                                 )}
+                                 href={"/"}
+                              >
+                                 Załóż konto
+                              </Link>
+                           </div>
+                        </DropdownMenuContent>
+                     </DropdownMenu>
+                  </HydrationWrapper>
                </div>
             </section>
             <section className="flex w-full justify-start p-2 ps-24">
@@ -138,14 +154,32 @@ function Navbar() {
                            </NavigationMenuLink>
                         </Link>
                      </NavigationMenuItem>
-                     <NavigationMenuItem>
-                        <NavigationMenuTrigger className="text-white">
-                           Wyszukiwanie zaawansowane
-                        </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                           <div>sdf</div>
-                        </NavigationMenuContent>
-                     </NavigationMenuItem>
+                     <HydrationWrapper
+                        placeholder={
+                           <Link href="/docs" legacyBehavior passHref>
+                              <NavigationMenuLink
+                                 className={cn(
+                                    navigationMenuTriggerStyle(),
+                                    "text-white"
+                                 )}
+                              >
+                                 Wyszukiwanie zaawansowane{" "}
+                                 <ChevronDown className="ml-1 mt-[2px] size-3" />
+                              </NavigationMenuLink>
+                           </Link>
+                        }
+                     >
+                        <NavigationMenuItem>
+                           <NavigationMenuTrigger className="text-white">
+                              Wyszukiwanie zaawansowane
+                           </NavigationMenuTrigger>
+                           <NavigationMenuContent>
+                              <div>
+                                 <h1>Wyszukiwanie zaawansowane</h1>
+                              </div>
+                           </NavigationMenuContent>
+                        </NavigationMenuItem>
+                     </HydrationWrapper>
 
                      <NavigationMenuItem>
                         <Link href="/docs" legacyBehavior passHref>
