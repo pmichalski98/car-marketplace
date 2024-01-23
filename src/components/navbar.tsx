@@ -1,14 +1,5 @@
-"use client"
-
 import Link from "next/link"
-import {
-   ChevronDown,
-   Menu,
-   Search,
-   SearchCheck,
-   Star,
-   TagsIcon,
-} from "lucide-react"
+import { Menu, Search, SearchCheck, Star, TagsIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -19,17 +10,9 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-   NavigationMenu,
-   NavigationMenuContent,
-   NavigationMenuItem,
-   NavigationMenuLink,
-   NavigationMenuList,
-   NavigationMenuTrigger,
-   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
 
 import HydrationWrapper from "./hydration-wrapper"
+import MenuPanel from "./menu-panel"
 import { Button, buttonVariants } from "./ui/button"
 import { Input } from "./ui/input"
 import Logo from "./ui/logo"
@@ -140,85 +123,7 @@ function Navbar() {
                </div>
             </section>
             <section className="flex w-full justify-start p-2 ps-24">
-               <NavigationMenu>
-                  <NavigationMenuList>
-                     <NavigationMenuItem>
-                        <Link href="/docs" legacyBehavior passHref>
-                           <NavigationMenuLink
-                              className={cn(
-                                 navigationMenuTriggerStyle(),
-                                 "text-white"
-                              )}
-                           >
-                              Nowości
-                           </NavigationMenuLink>
-                        </Link>
-                     </NavigationMenuItem>
-                     <HydrationWrapper
-                        placeholder={
-                           <Link href="/docs" legacyBehavior passHref>
-                              <NavigationMenuLink
-                                 className={cn(
-                                    navigationMenuTriggerStyle(),
-                                    "text-white"
-                                 )}
-                              >
-                                 Wyszukiwanie zaawansowane{" "}
-                                 <ChevronDown className="ml-1 mt-[2px] size-3" />
-                              </NavigationMenuLink>
-                           </Link>
-                        }
-                     >
-                        <NavigationMenuItem>
-                           <NavigationMenuTrigger className="text-white">
-                              Wyszukiwanie zaawansowane
-                           </NavigationMenuTrigger>
-                           <NavigationMenuContent>
-                              <div>
-                                 <h1>Wyszukiwanie zaawansowane</h1>
-                              </div>
-                           </NavigationMenuContent>
-                        </NavigationMenuItem>
-                     </HydrationWrapper>
-
-                     <NavigationMenuItem>
-                        <Link href="/docs" legacyBehavior passHref>
-                           <NavigationMenuLink
-                              className={cn(
-                                 navigationMenuTriggerStyle(),
-                                 "text-white"
-                              )}
-                           >
-                              Dodaj ogłoszenie
-                           </NavigationMenuLink>
-                        </Link>
-                     </NavigationMenuItem>
-                     <NavigationMenuItem>
-                        <Link href="/docs" legacyBehavior passHref>
-                           <NavigationMenuLink
-                              className={cn(
-                                 navigationMenuTriggerStyle(),
-                                 "text-white"
-                              )}
-                           >
-                              Kontakt
-                           </NavigationMenuLink>
-                        </Link>
-                     </NavigationMenuItem>
-                     <NavigationMenuItem>
-                        <Link href="/docs" legacyBehavior passHref>
-                           <NavigationMenuLink
-                              className={cn(
-                                 navigationMenuTriggerStyle(),
-                                 "text-white"
-                              )}
-                           >
-                              O Nas
-                           </NavigationMenuLink>
-                        </Link>
-                     </NavigationMenuItem>
-                  </NavigationMenuList>
-               </NavigationMenu>
+               <MenuPanel />
             </section>
          </div>
       </div>
