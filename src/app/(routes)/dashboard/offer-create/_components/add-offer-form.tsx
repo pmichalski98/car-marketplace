@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { String } from "aws-sdk/clients/batch"
 import { AlertCircle } from "lucide-react"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
