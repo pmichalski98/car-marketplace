@@ -1,7 +1,7 @@
 import { Dispatch, useEffect } from "react"
 import { DndContext } from "@dnd-kit/core"
 import {
-   arrayMove,
+   arraySwap,
    rectSwappingStrategy,
    SortableContext,
 } from "@dnd-kit/sortable"
@@ -56,7 +56,7 @@ function DropzoneField({
             const oldIndex = items.indexOf(active.id)
             const newIndex = items.indexOf(over.id)
 
-            return arrayMove(items, oldIndex, newIndex)
+            return arraySwap(items, oldIndex, newIndex)
          })
       }
    }
@@ -71,7 +71,7 @@ function DropzoneField({
                      items={imagePreviews}
                      strategy={rectSwappingStrategy}
                   >
-                     <div className="flex w-full flex-wrap justify-center">
+                     <div className="grid grid-cols-2">
                         {imagePreviews.map((path, index) => (
                            <SortableItem
                               key={path}
