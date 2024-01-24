@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
+import { router } from "next/client"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { String } from "aws-sdk/clients/batch"
 import { AlertCircle } from "lucide-react"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -45,6 +46,7 @@ function AddOfferForm() {
    })
 
    const [imagePreviews, setImagePreviews] = useState<string[]>([])
+   const router = useRouter()
 
    const onSubmit: SubmitHandler<FormData> = async (formData: FormData) => {
       const data = new FormData()
@@ -71,7 +73,8 @@ function AddOfferForm() {
       })
       if (res.ok) {
          reset()
-         // redirect probably
+         router.push("/dashboard")
+         setImagePreviews([])
       }
    }
 

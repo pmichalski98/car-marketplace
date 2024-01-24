@@ -20,7 +20,7 @@ function DropzoneField({
 }: DropzoneFieldProps) {
    const typeValidator = (file: FileWithPath) => {
       if (file.type.startsWith("image/")) {
-         if (file.size > 3 * 1024 * 1024) {
+         if (file.size > 10 * 1024 * 1024) {
             return {
                code: "size-too-large",
                message: "Image file is larger than 3MB",

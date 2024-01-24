@@ -8,7 +8,7 @@ import { addImagesToS3 } from "@/app/api/addImagesToS3"
 export async function POST(req: Request) {
    const { userId } = auth()
    const prisma = new PrismaClient()
-
+   console.log(userId)
    if (!userId) throw new Error("User not signed In")
    try {
       const user = await prisma.user.findUnique({ where: { id: userId } })
