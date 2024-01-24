@@ -6,13 +6,21 @@ import { ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
    NavigationMenu,
-   NavigationMenuContent,
    NavigationMenuItem,
    NavigationMenuLink,
    NavigationMenuList,
-   NavigationMenuTrigger,
    navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import {
+   Sheet,
+   SheetContent,
+   SheetDescription,
+   SheetHeader,
+   SheetTitle,
+   SheetTrigger,
+} from "@/components/ui/sheet"
+
+import OfferFilters from "./offer-filters"
 
 function MenuPanel() {
    const ROUTES = [
@@ -23,16 +31,26 @@ function MenuPanel() {
       {
          label: "Wyszukiwanie zaawansowane",
          href: "/",
-         placeholder: (
-            <>
-               Wyszukiwanie zaawansowane
-               <ChevronDown className="ml-1 mt-[2px] size-3" />
-            </>
-         ),
          content: (
-            <div>
-               <h1>Wyszukiwanie zaawansowane</h1>
-            </div>
+            <Sheet>
+               <SheetTrigger>
+                  <p className="flex text-sm font-medium">
+                     Wyszukiwanie zaawansowane{" "}
+                     <ChevronDown className="relative left-1 top-[5px] size-3" />
+                  </p>
+               </SheetTrigger>
+               <SheetContent
+                  side={"top"}
+                  className="top-32 flex justify-center"
+               >
+                  <SheetHeader className="w-full max-w-[1440px]">
+                     <SheetTitle>Wyszukiwanie zaawansowane:</SheetTitle>
+                     <SheetDescription>
+                        <OfferFilters />
+                     </SheetDescription>
+                  </SheetHeader>
+               </SheetContent>
+            </Sheet>
          ),
       },
       {
@@ -50,26 +68,20 @@ function MenuPanel() {
    ]
 
    return (
-      // <HydrationWrapper>
       <NavigationMenu>
          <NavigationMenuList>
             {ROUTES.map((route) =>
                route.content ? (
-                  <NavigationMenuItem>
-                     <NavigationMenuTrigger className="text-white">
-                        {route.label}
-                     </NavigationMenuTrigger>
-                     <NavigationMenuContent>
-                        {route.content}
-                     </NavigationMenuContent>
+                  <NavigationMenuItem key={route.label}>
+                     {route.content}
                   </NavigationMenuItem>
                ) : (
-                  <NavigationMenuItem>
+                  <NavigationMenuItem key={route.label}>
                      <Link href={route.href} legacyBehavior passHref>
                         <NavigationMenuLink
                            className={cn(
                               navigationMenuTriggerStyle(),
-                              "text-white"
+                              "text-black"
                            )}
                         >
                            {route.label}
