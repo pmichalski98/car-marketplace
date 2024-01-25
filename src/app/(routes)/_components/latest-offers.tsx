@@ -1,12 +1,11 @@
 import React from "react"
-import { PrismaClient } from "@prisma/client"
 
 import { Button } from "@/components/ui/button"
 import CarOffers from "@/app/(routes)/_components/car-offers"
 
-async function LatestOffers() {
-   const prisma = new PrismaClient()
+import { prisma } from "../../../../prisma/db"
 
+async function LatestOffers() {
    const latestCarOffers = await prisma.carOffer.findMany({
       include: {
          images: true,

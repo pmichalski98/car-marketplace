@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { auth, SignOutButton } from "@clerk/nextjs"
 import { Menu, SearchCheck, Star, TagsIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -11,9 +12,11 @@ import {
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { buttonVariants } from "./ui/button"
+import { Button, buttonVariants } from "./ui/button"
 
 function MenuDropdown() {
+   const user = auth()
+
    return (
       <DropdownMenu>
          <DropdownMenuTrigger>
@@ -54,24 +57,13 @@ function MenuDropdown() {
                </Link>
             </DropdownMenuItem>
             <div className="flex flex-col items-center gap-2 py-10">
-               <Link
-                  className={cn(
-                     buttonVariants({ variant: "outline" }),
-                     "w-full max-w-52 text-center"
-                  )}
-                  href={"/"}
-               >
-                  Zaloguj się
-               </Link>
-               <Link
-                  className={cn(
-                     buttonVariants({ variant: "default" }),
-                     "w-full max-w-52 text-center"
-                  )}
-                  href={"/"}
-               >
-                  Załóż konto
-               </Link>
+               {user.userId && (
+                  <SignOutButton>
+                     <Button className={cn("w-full max-w-52 text-center")}>
+                        Wyloguj się
+                     </Button>
+                  </SignOutButton>
+               )}
             </div>
          </DropdownMenuContent>
       </DropdownMenu>

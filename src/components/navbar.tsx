@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { auth, SignOutButton } from "@clerk/nextjs"
 
 import { cn } from "@/lib/utils"
 
@@ -9,6 +10,7 @@ import Logo from "./ui/logo"
 import SearchBar from "./ui/search-bar"
 
 function Navbar() {
+   const user = auth()
    return (
       <div className="sticky z-[9999] flex w-full justify-center bg-secondary pt-5">
          <div className="flex w-full max-w-[1440px] flex-col">
@@ -18,9 +20,9 @@ function Navbar() {
                   <SearchBar />
                </div>
                <div className="flex items-center">
-                  <div>
+                  {!user.userId && (
                      <Link
-                        href="/"
+                        href="/sign-in"
                         className={cn(
                            buttonVariants({ variant: "link" }),
                            "text-black hover:text-black"
@@ -28,10 +30,11 @@ function Navbar() {
                      >
                         Zaloguj się
                      </Link>
-                  </div>
-                  <MenuDropdown />
+                  )}
+                  {user.userId && <MenuDropdown />}
                </div>
             </section>
+
             <section className="flex w-full justify-start p-2 ps-24">
                <MenuPanel />
             </section>
