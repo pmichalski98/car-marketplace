@@ -1,37 +1,21 @@
-import { auth } from "@clerk/nextjs"
-import { PrismaClient } from "@prisma/client"
-
-import CarOffer from "@/app/(routes)/dashboard/_components/car-offer"
+import DashboardHeader from "@/app/(routes)/dashboard/_components/dashboard-header"
+import HottestOffers from "@/app/(routes)/dashboard/_components/hottest-offers"
+import LatestOffers from "@/app/(routes)/dashboard/_components/latest-offers"
 
 async function DashboardPage() {
-   const { userId } = auth()
-   const prisma = new PrismaClient()
-
-   if (!userId) throw new Error("User not logged in")
-
-   const carOffers = await prisma.carOffer.findMany({
-      where: {
-         userId,
-      },
-      include: {
-         images: true,
-      },
-   })
-
-   if (!carOffers) return <div>No car offers created yet.</div>
-
    return (
-      <section className="px-10 py-10">
-         <ul className="grid grid-cols-4 gap-10">
-            {carOffers.map((carOffer) => {
-               return (
-                  <li key={carOffer.id}>
-                     <CarOffer carOffer={carOffer} />
-                  </li>
-               )
-            })}
-         </ul>
-      </section>
+      <main className="mx-auto max-w-screen-2xl px-3 py-10 md:px-10">
+         <section className="">
+            <DashboardHeader />
+         </section>
+         <section className=" py-10">
+            <HottestOffers />
+         </section>
+         <section>
+            <LatestOffers />
+         </section>
+      </main>
    )
 }
+
 export default DashboardPage
