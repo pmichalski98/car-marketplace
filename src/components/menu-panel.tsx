@@ -14,7 +14,6 @@ import {
 import {
    Sheet,
    SheetContent,
-   SheetDescription,
    SheetHeader,
    SheetTitle,
    SheetTrigger,
@@ -45,9 +44,7 @@ function MenuPanel() {
                >
                   <SheetHeader className="w-full max-w-[1440px]">
                      <SheetTitle>Wyszukiwanie zaawansowane:</SheetTitle>
-                     <SheetDescription>
-                        <OfferFilters />
-                     </SheetDescription>
+                     <OfferFilters />
                   </SheetHeader>
                </SheetContent>
             </Sheet>

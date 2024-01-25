@@ -26,7 +26,7 @@ function MenuDropdown() {
                <Menu />
             </div>
          </DropdownMenuTrigger>
-         <DropdownMenuContent className="w-[300px]">
+         <DropdownMenuContent className="z-[9999] w-[300px]">
             <DropdownMenuLabel className="text-xl">Menu</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
