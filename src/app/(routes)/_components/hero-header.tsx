@@ -11,7 +11,7 @@ import {
    SelectValue,
 } from "@/components/ui/select"
 
-function DashboardHeader() {
+function HeroHeader() {
    return (
       <div className="mx-auto  max-w-screen-2xl grid-cols-2 lg:grid">
          <div className="mb-10 flex flex-col justify-center gap-4 lg:mb-0 lg:pr-20">
@@ -62,4 +62,4 @@ function DashboardHeader() {
    )
 }
 
-export default DashboardHeader
+export default HeroHeader
