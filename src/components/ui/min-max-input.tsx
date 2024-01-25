@@ -24,6 +24,7 @@ interface MinMaxInputProps {
    minError?: string
    maxError?: string
    register: any
+   setValue: any
    resetField: any
    minName: string
    maxName: string
@@ -33,6 +34,7 @@ function MinMaxInput({
    register,
    label,
    minError,
+   setValue,
    maxError,
    resetField,
    minName,
@@ -59,7 +61,14 @@ function MinMaxInput({
          <PopoverContent className="w-[300px] overflow-hidden p-0">
             <div className="flex flex-col gap-4 px-3 py-6">
                <div className="relative">
-                  <Input {...register(minName)} placeholder="Minimum" />
+                  <Input
+                     {...register(minName)}
+                     placeholder="Minimum"
+                     onChange={(event) => {
+                        const result = event.target.value.replace(/\D/g, "")
+                        setValue(minName, result)
+                     }}
+                  />
                   {minError && (
                      <TooltipProvider>
                         <Tooltip>
@@ -74,7 +83,14 @@ function MinMaxInput({
                   )}
                </div>
                <div className="relative">
-                  <Input {...register(maxName)} placeholder="Maksimum" />
+                  <Input
+                     {...register(maxName)}
+                     placeholder="Maksimum"
+                     onChange={(event) => {
+                        const result = event.target.value.replace(/\D/g, "")
+                        setValue(maxName, result)
+                     }}
+                  />
                   {maxError && (
                      <TooltipProvider>
                         <Tooltip>
@@ -94,8 +110,8 @@ function MinMaxInput({
                   className="w-full rounded-none"
                   variant={"secondary"}
                   onClick={() => {
-                     resetField(minName)
-                     resetField(maxName)
+                     setValue(minName, undefined)
+                     resetField(maxName, undefined)
                   }}
                >
                   Wyczyść
