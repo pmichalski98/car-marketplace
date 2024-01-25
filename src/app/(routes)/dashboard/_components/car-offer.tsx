@@ -1,7 +1,7 @@
 import React from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { CarOffer as CarOfferType, Images, Prisma } from "@prisma/client"
+import { CarOffer as CarOfferType, Images } from "@prisma/client"
 import { CircleDollarSign, MapPin, Star } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,7 +12,7 @@ import {
    TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-export type CarOfferProps = {
+interface CarOfferProps {
    carOffer: CarOfferType & {
       images: Images[]
    }
@@ -20,20 +20,20 @@ export type CarOfferProps = {
 function CarOffer({ carOffer }: CarOfferProps) {
    return (
       <Link className="group" href={`/dashboard/${carOffer.id}`}>
-         <Card className="ring-slate-300 group-hover:border-0 group-hover:ring-2">
+         <Card className=" ring-slate-300 group-hover:border-0 group-hover:ring-2 lg:block">
             <CardHeader className=" max-h-[220px] p-0">
-               <div className="relative">
+               <div className="relative h-[250px] ">
                   <Image
-                     className="rounded-lg"
-                     width={300}
-                     height={400}
+                     className="rounded-lg object-cover"
+                     sizes="100vw"
+                     fill
                      src={`https://cool-car-marketplace.s3.eu-north-1.amazonaws.com/${carOffer.images[0].id}`}
                      alt={"Main car offer image"}
                   />
                   <div className="absolute  right-2 top-2 z-40 ">
                      <TooltipProvider delayDuration={100}>
                         <Tooltip>
-                           <TooltipTrigger>
+                           <TooltipTrigger asChild>
                               <button className="group/star">
                                  <Star
                                     size={26}
@@ -54,7 +54,7 @@ function CarOffer({ carOffer }: CarOfferProps) {
                </div>
             </CardHeader>
             <CardContent>
-               <div className="space-y-3 ">
+               <div className="space-y-3 pt-4 lg:pt-2 ">
                   <CardTitle className="flex items-center gap-1 whitespace-nowrap text-xl">
                      <p className="capitalize">{carOffer.manufacturer}</p>
                      <span className="font-light">|</span>

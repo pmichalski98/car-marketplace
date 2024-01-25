@@ -2,7 +2,7 @@ import React from "react"
 import { PrismaClient } from "@prisma/client"
 
 import { Button } from "@/components/ui/button"
-import CarOffer from "@/app/(routes)/dashboard/_components/car-offer"
+import CarOffers from "@/app/(routes)/dashboard/_components/car-offers"
 
 async function LatestOffers() {
    const prisma = new PrismaClient()
@@ -20,15 +20,11 @@ async function LatestOffers() {
    if (!latestCarOffers) return <div>No car offers created yet.</div>
    return (
       <>
-         <ul className="grid grid-cols-4 gap-10">
-            {latestCarOffers.map((carOffer) => {
-               return (
-                  <li key={carOffer.id}>
-                     <CarOffer carOffer={carOffer} />
-                  </li>
-               )
-            })}
-         </ul>
+         <div className=" space-y-2 py-10 text-center">
+            <h2 className="text-2xl font-medium">Nowości</h2>
+            <p>Przeglądaj wszystkie nowości na sprzedaż</p>
+         </div>
+         <CarOffers carOffers={latestCarOffers} />
          <div className="mt-14 w-full text-center">
             <Button variant="outline" className="border-black">
                Zobacz więcej
