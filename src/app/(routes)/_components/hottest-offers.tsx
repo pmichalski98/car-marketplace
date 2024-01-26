@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import CarOffers from "@/app/(routes)/dashboard/_components/car-offers"
+import CarOffers from "@/app/(routes)/_components/car-offers"
 
 async function HottestOffers() {
    const prisma = new PrismaClient()
