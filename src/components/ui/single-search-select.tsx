@@ -1,5 +1,5 @@
 import { PopoverClose } from "@radix-ui/react-popover"
-import { Check, ChevronDown, ChevronsUpDown } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import { Controller } from "react-hook-form"
 
 import { cn } from "@/lib/utils"
@@ -29,6 +29,7 @@ interface SingleSearchSelectProps {
    label: string
    notFound: string
    searchMessage: string
+   disabled?: boolean
 }
 
 function SingleSearchSelect({
@@ -40,6 +41,7 @@ function SingleSearchSelect({
    label,
    notFound,
    searchMessage,
+   disabled,
 }: SingleSearchSelectProps) {
    return (
       <Controller
@@ -47,7 +49,10 @@ function SingleSearchSelect({
          name={name}
          render={({ field }) => (
             <Popover>
-               <PopoverTrigger>
+               <PopoverTrigger
+                  disabled={disabled}
+                  className={cn(disabled ? "opacity-65" : null)}
+               >
                   <div
                      role="combobox"
                      className={cn(

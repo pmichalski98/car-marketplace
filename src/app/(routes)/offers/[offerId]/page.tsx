@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { CarOffer } from "@prisma/client"
-import { MapPin, Star, Upload } from "lucide-react"
+import { Car, MapPin, Star, Upload } from "lucide-react"
 
 import { prisma } from "@/lib/db"
 import { Button } from "@/components/ui/button"
@@ -32,6 +32,19 @@ async function OfferPage({ params }: { params: { offerId: string } }) {
    if (!offer) {
       return notFound()
    }
+
+   const images = [
+      "/miata.jpg",
+      "/miata.jpg",
+      "/miata.jpg",
+      "/miata.jpg",
+      "/miata.jpg",
+      "/miata.jpg",
+      "/miata.jpg",
+      "/miata.jpg",
+      "/miata.jpg",
+      "/miata.jpg",
+   ]
 
    return (
       <main className="flex justify-center">
@@ -80,13 +93,26 @@ async function OfferPage({ params }: { params: { offerId: string } }) {
                   <CarouselNext className="absolute right-10" />
                </Carousel>
                <div className="grid w-full grid-cols-2 place-content-between gap-x-2 gap-y-2 md:gap-y-0">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                     <div className="relative aspect-square w-full" key={index}>
+                  {images.slice(0, 4).map((image, index) => (
+                     <div
+                        className="relative aspect-square w-full cursor-pointer overflow-hidden rounded-lg"
+                        key={index}
+                     >
+                        {index === 3 && images.length > 4 ? (
+                           <>
+                              <div className="absolute top-0 z-20 h-full w-full bg-black/40 hover:bg-black/60" />
+                              <div className="absolute flex h-full w-full items-center justify-center">
+                                 <p className="z-30 text-5xl text-white">
+                                    +{images.length - 4}
+                                 </p>
+                              </div>
+                           </>
+                        ) : null}
                         <Image
-                           src={"/miata.jpg"}
+                           src={image}
                            key={index}
                            alt={""}
-                           className="rounded-lg object-cover object-center"
+                           className="z-0 object-cover object-center"
                            fill
                         />
                      </div>
@@ -166,7 +192,7 @@ async function OfferPage({ params }: { params: { offerId: string } }) {
                   <h2 className="pb-5 text-xl font-medium">
                      Opis sprzedającego:
                   </h2>
-                  <Card className="w-full p-5">
+                  <Card className="w-full p-5 pb-60">
                      <p>
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.
                         Quis unde modi iure, illum, aperiam nihil vitae beatae
@@ -197,10 +223,19 @@ async function OfferPage({ params }: { params: { offerId: string } }) {
                </div>
                <div className="w-full">
                   <h2 className="pb-5 text-xl font-medium">Dla kupującego:</h2>
-                  <div className="grid grid-cols-3 gap-10">
-                     <Card className="w-full p-5">f</Card>
-                     <Card className="w-full p-5">f</Card>
-                     <Card className="w-full p-5">f</Card>
+                  <div className="grid grid-cols-2 gap-10 lg:grid-cols-3">
+                     <Card className="flex w-full flex-col items-center gap-6 p-6">
+                        <h1 className="flex items-center gap-2 text-lg font-medium">
+                           <Car /> Historia Pojazdu
+                        </h1>
+                        <p className="text-center">
+                           Zanim zdecydujesz się kupić samochód, zapoznaj się z
+                           jego historią. Pobierz raport za opłatą.
+                        </p>
+                        <Button variant={"outline"} size={"lg"}>
+                           Pobierz raport
+                        </Button>
+                     </Card>
                   </div>
                </div>
             </section>

@@ -1,18 +1,29 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { PopoverClose } from "@radix-ui/react-popover"
+import { ChevronDown } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
-   Select,
-   SelectContent,
-   SelectItem,
-   SelectTrigger,
-   SelectValue,
-} from "@/components/ui/select"
+   Command,
+   CommandEmpty,
+   CommandGroup,
+   CommandInput,
+   CommandItem,
+} from "@/components/ui/command"
+import {
+   Popover,
+   PopoverContent,
+   PopoverTrigger,
+} from "@/components/ui/popover"
 
+import { Checkbox } from "./ui/checkbox"
+import { Label } from "./ui/label"
 import MinMaxInput from "./ui/min-max-input"
 import Multiselect from "./ui/multiselect"
 import SingleSearchSelect from "./ui/single-search-select"
@@ -126,12 +137,15 @@ const formSchema = z
 type FormData = z.infer<typeof formSchema>
 
 export default function OfferFilters() {
+   const [brand, setBrand] = useState<undefined | string>(undefined)
+   const [modelItems, setModelItems] = useState<
+      { label: string; value: string }[]
+   >([])
    const {
       register,
       handleSubmit,
       resetField,
       control,
-      getValues,
       setValue,
       formState: { errors },
    } = useForm<FormData>({
@@ -148,15 +162,91 @@ export default function OfferFilters() {
    function onSubmit(formData: FormData) {
       console.log(formData)
    }
+
+   useEffect(() => {
+      console.log(brand)
+   }, [brand])
+
    return (
       <form
          onSubmit={handleSubmit(onSubmit)}
          className="flex flex-wrap gap-3"
          noValidate
       >
-         {/* {errors.brand ? errors.brand.message : null} */}
-         {errors.model ? errors.model.message : null}
-         <SingleSearchSelect
+         <Controller
+            control={control}
+            name={"brand"}
+            render={({ field }) => (
+               <Popover>
+                  <PopoverTrigger>
+                     <div
+                        role="combobox"
+                        className={cn(
+                           buttonVariants({ variant: "outline" }),
+                           "w-min-[100px] flex h-8 justify-between border-black"
+                        )}
+                     >
+                        {field.value ? field.value.label : "Marka"}
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                     </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[300px] overflow-hidden p-0">
+                     <Command>
+                        <CommandInput placeholder={"Wyszukaj markę."} />
+                        <CommandEmpty>{"Nie znaleziono marki."}</CommandEmpty>
+                        <CommandGroup>
+                           {items.map((item) => (
+                              <CommandItem
+                                 value={item.label}
+                                 key={item.value}
+                                 onSelect={() => {
+                                    setValue("brand", item)
+                                    setBrand(item.value)
+                                 }}
+                                 className="flex gap-2 px-0 py-0"
+                              >
+                                 <Checkbox
+                                    checked={item.value === field.value?.value}
+                                    id={item.value}
+                                 />
+                                 <Label
+                                    className="w-full py-2"
+                                    htmlFor={item.value}
+                                 >
+                                    {item.label}
+                                 </Label>
+                              </CommandItem>
+                           ))}
+                        </CommandGroup>
+                     </Command>
+                     <div className="flex">
+                        <Button
+                           className="w-full rounded-none"
+                           variant={"secondary"}
+                           onClick={() => {
+                              setBrand(undefined)
+                              resetField("brand")
+                              resetField("model")
+                           }}
+                        >
+                           Wyczyść
+                        </Button>
+                        <PopoverClose className="w-full">
+                           <div
+                              className={cn(
+                                 buttonVariants({ variant: "default" }),
+                                 "w-full rounded-none"
+                              )}
+                           >
+                              Zapisz
+                           </div>
+                        </PopoverClose>
+                     </div>
+                  </PopoverContent>
+               </Popover>
+            )}
+         />
+         {/* <SingleSearchSelect
             items={items}
             control={control}
             name={"brand"}
@@ -165,9 +255,10 @@ export default function OfferFilters() {
             resetField={resetField}
             notFound="Nie znaleziono marki."
             searchMessage="Wpisz nazwę marki."
-         />
+         /> */}
+
          <SingleSearchSelect
-            items={items}
+            items={modelItems}
             control={control}
             name={"model"}
             label={"Model"}
@@ -175,6 +266,7 @@ export default function OfferFilters() {
             resetField={resetField}
             notFound="Nie znaleziono modelu."
             searchMessage="Wyszkuaj nazwę modelu."
+            disabled={!brand}
          />
          <Multiselect
             items={items}
