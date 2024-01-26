@@ -1,13 +1,12 @@
 import React from "react"
-import { PrismaClient } from "@prisma/client"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import CarOffers from "@/app/(routes)/_components/car-offers"
 
-async function HottestOffers() {
-   const prisma = new PrismaClient()
+import { prisma } from "../../../../prisma/db"
 
+async function HottestOffers() {
    const hottestCarOffers = await prisma.carOffer.findMany({
       include: {
          images: true,

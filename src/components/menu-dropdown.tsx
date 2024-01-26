@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { auth, SignInButton, SignOutButton } from "@clerk/nextjs"
 import { Menu, SearchCheck, Star, TagsIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -11,9 +12,11 @@ import {
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { buttonVariants } from "./ui/button"
+import { Button, buttonVariants } from "./ui/button"
 
 function MenuDropdown() {
+   const user = auth()
+
    return (
       <DropdownMenu>
          <DropdownMenuTrigger>
@@ -30,53 +33,52 @@ function MenuDropdown() {
             <DropdownMenuLabel className="text-xl">Menu</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-               className="flex items-center gap-2 font-medium"
                asChild
+               className="flex cursor-pointer items-center gap-2 font-medium"
             >
-               <Link href={"/"}>
+               <Link href={"/dashboard/favourites"}>
                   <Star /> Ulubione
                </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
-               className="flex items-center gap-2 font-medium"
                asChild
+               className="flex cursor-pointer items-center gap-2 font-medium"
             >
-               <Link href={"/"}>
+               <Link
+                  href={"/dashboard/saved-searches"}
+                  className="flex items-center gap-2 font-medium"
+               >
                   <SearchCheck /> Zapisane wyszukiwania
                </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
-               className="flex items-center gap-2 font-medium"
                asChild
+               className="flex cursor-pointer items-center gap-2 font-medium"
             >
-               <Link href={"/"}>
+               <Link
+                  href={"/dashboard/my-offers"}
+                  className="flex items-center gap-2 font-medium"
+               >
                   <TagsIcon /> Moje ogłoszenia
                </Link>
             </DropdownMenuItem>
             <div className="flex flex-col items-center gap-2 py-10">
-               <Link
-                  className={cn(
-                     buttonVariants({ variant: "outline" }),
-                     "w-full max-w-52 text-center"
-                  )}
-                  href={"/"}
-               >
-                  Zaloguj się
-               </Link>
-               <Link
-                  className={cn(
-                     buttonVariants({ variant: "default" }),
-                     "w-full max-w-52 text-center"
-                  )}
-                  href={"/"}
-               >
-                  Załóż konto
-               </Link>
+               {user.userId ? (
+                  <SignOutButton>
+                     <Button className={cn("w-full max-w-52 text-center")}>
+                        Wyloguj się
+                     </Button>
+                  </SignOutButton>
+               ) : (
+                  <SignInButton>
+                     <Button className={cn("w-full max-w-52 text-center")}>
+                        Zaloguj się
+                     </Button>
+                  </SignInButton>
+               )}
             </div>
          </DropdownMenuContent>
       </DropdownMenu>
-      //      }
-      //   />
    )
 }
 export default MenuDropdown
