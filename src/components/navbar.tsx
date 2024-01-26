@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { auth, SignOutButton } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs"
 
 import { cn } from "@/lib/utils"
 
@@ -31,7 +31,7 @@ function Navbar() {
                         Zaloguj się
                      </Link>
                   )}
-                  {user.userId && <MenuDropdown />}
+                  <MenuDropdown />
                </div>
             </section>
 
