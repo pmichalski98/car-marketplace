@@ -1,10 +1,9 @@
 import React from "react"
 
+import { prisma } from "@/lib/db"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import CarOffers from "@/app/(routes)/_components/car-offers"
-
-import { prisma } from "../../../../prisma/db"
 
 async function HottestOffers() {
    const hottestCarOffers = await prisma.carOffer.findMany({

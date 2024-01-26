@@ -19,7 +19,7 @@ interface CarOfferProps {
 }
 function CarOffer({ carOffer }: CarOfferProps) {
    return (
-      <Link className="group" href={`/dashboard/${carOffer.id}`}>
+      <Link className="group" href={`/offers/${carOffer.id}`}>
          <Card className=" ring-slate-300 group-hover:border-0 group-hover:ring-2 lg:block">
             <CardHeader className=" max-h-[220px] p-0">
                <div className="relative h-[250px] ">

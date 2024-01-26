@@ -1,9 +1,8 @@
 import React from "react"
 
+import { prisma } from "@/lib/db"
 import { Button } from "@/components/ui/button"
 import CarOffers from "@/app/(routes)/_components/car-offers"
-
-import { prisma } from "../../../../prisma/db"
 
 async function LatestOffers() {
    const latestCarOffers = await prisma.carOffer.findMany({

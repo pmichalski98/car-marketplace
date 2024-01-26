@@ -30,7 +30,6 @@ const items = [
 ]
 
 const rangeValidator = (min: number | undefined, max: number | undefined) => {
-   console.log(min, max)
    if (min === undefined || max === undefined) {
       return true
    } else if (min > max) {
@@ -41,18 +40,24 @@ const rangeValidator = (min: number | undefined, max: number | undefined) => {
 
 const formSchema = z
    .object({
-      sort: z.object({
-         label: z.string().min(1),
-         value: z.string().min(1),
-      }),
-      brand: z.object({
-         label: z.string().min(1),
-         value: z.string().min(1),
-      }),
-      model: z.object({
-         label: z.string().min(1),
-         value: z.string().min(1),
-      }),
+      sort: z
+         .object({
+            label: z.string(),
+            value: z.string(),
+         })
+         .optional(),
+      brand: z
+         .object({
+            label: z.string(),
+            value: z.string(),
+         })
+         .optional(),
+      model: z
+         .object({
+            label: z.string().min(1),
+            value: z.string().min(1),
+         })
+         .optional(),
       bodyType: z.array(
          z.object({
             label: z.string().min(1),
@@ -126,6 +131,7 @@ export default function OfferFilters() {
       handleSubmit,
       resetField,
       control,
+      getValues,
       setValue,
       formState: { errors },
    } = useForm<FormData>({
@@ -142,13 +148,14 @@ export default function OfferFilters() {
    function onSubmit(formData: FormData) {
       console.log(formData)
    }
-
    return (
       <form
          onSubmit={handleSubmit(onSubmit)}
          className="flex flex-wrap gap-3"
          noValidate
       >
+         {/* {errors.brand ? errors.brand.message : null} */}
+         {errors.model ? errors.model.message : null}
          <SingleSearchSelect
             items={items}
             control={control}

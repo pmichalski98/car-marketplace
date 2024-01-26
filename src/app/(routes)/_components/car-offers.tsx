@@ -1,9 +1,7 @@
 import React from "react"
-import { Images } from "@prisma/client"
+import { CarOffer as CarOfferType, Images } from "@prisma/client"
 
 import CarOffer from "@/app/(routes)/_components/car-offer"
-
-import { CarOffer as CarOfferType } from ".prisma/client"
 
 interface CarOffersProps {
    carOffers: (CarOfferType & {

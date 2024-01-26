@@ -55,10 +55,7 @@ function SingleSearchSelect({
                         "w-min-[100px] flex h-8 justify-between border-black"
                      )}
                   >
-                     {!!field.value
-                        ? items.find((item) => item.value === field.value)
-                             ?.label
-                        : label}
+                     {field.value ? field.value.label : label}
                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </div>
                </PopoverTrigger>
@@ -72,13 +69,12 @@ function SingleSearchSelect({
                               value={item.label}
                               key={item.value}
                               onSelect={() => {
-                                 field.value === item.value
-                                 setValue(name, item.value)
+                                 setValue(name, item)
                               }}
                               className="flex gap-2 px-0 py-0"
                            >
                               <Checkbox
-                                 checked={item.value === field.value}
+                                 checked={item.value === field.value?.value}
                                  id={item.value}
                               />
                               <Label

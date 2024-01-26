@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs"
 
+import { prisma } from "@/lib/db"
 import { formSchema } from "@/app/(routes)/dashboard/offer-create/formSchema"
 import { addImagesToS3 } from "@/app/api/addImagesToS3"
-
-import { prisma } from "../../../../prisma/db"
 
 export async function POST(req: Request) {
    const { userId } = auth()
