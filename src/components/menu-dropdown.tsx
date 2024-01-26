@@ -32,35 +32,35 @@ function MenuDropdown() {
          <DropdownMenuContent className="z-[9999] w-[300px]">
             <DropdownMenuLabel className="text-xl">Menu</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-               <button className="w-full">
-                  <Link
-                     className="flex items-center gap-2 font-medium"
-                     href={"/dashboard/favourites"}
-                  >
-                     <Star /> Ulubione
-                  </Link>
-               </button>
+            <DropdownMenuItem
+               asChild
+               className="flex cursor-pointer items-center gap-2 font-medium"
+            >
+               <Link href={"/dashboard/favourites"}>
+                  <Star /> Ulubione
+               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-               <button className="w-full">
-                  <Link
-                     href={"/dashboard/saved-searches"}
-                     className="flex items-center gap-2 font-medium"
-                  >
-                     <SearchCheck /> Zapisane wyszukiwania
-                  </Link>
-               </button>
+            <DropdownMenuItem
+               asChild
+               className="flex cursor-pointer items-center gap-2 font-medium"
+            >
+               <Link
+                  href={"/dashboard/saved-searches"}
+                  className="flex items-center gap-2 font-medium"
+               >
+                  <SearchCheck /> Zapisane wyszukiwania
+               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-               <button className="w-full">
-                  <Link
-                     href={"/dashboard/my-offers"}
-                     className="flex items-center gap-2 font-medium"
-                  >
-                     <TagsIcon /> Moje ogłoszenia
-                  </Link>
-               </button>
+            <DropdownMenuItem
+               asChild
+               className="flex cursor-pointer items-center gap-2 font-medium"
+            >
+               <Link
+                  href={"/dashboard/my-offers"}
+                  className="flex items-center gap-2 font-medium"
+               >
+                  <TagsIcon /> Moje ogłoszenia
+               </Link>
             </DropdownMenuItem>
             <div className="flex flex-col items-center gap-2 py-10">
                {user.userId ? (
