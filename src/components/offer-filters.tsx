@@ -15,6 +15,7 @@ import {
 
 import MinMaxInput from "./ui/min-max-input"
 import Multiselect from "./ui/multiselect"
+import SingleSearchSelect from "./ui/single-search-select"
 
 const items = [
    { label: "English", value: "en" },
@@ -40,20 +41,18 @@ const rangeValidator = (min: number | undefined, max: number | undefined) => {
 
 const formSchema = z
    .object({
-      sort: z.string().optional(),
-
-      brand: z.array(
-         z.object({
-            label: z.string().min(1),
-            value: z.string().min(1),
-         })
-      ),
-      model: z.array(
-         z.object({
-            label: z.string().min(1),
-            value: z.string().min(1),
-         })
-      ),
+      sort: z.object({
+         label: z.string().min(1),
+         value: z.string().min(1),
+      }),
+      brand: z.object({
+         label: z.string().min(1),
+         value: z.string().min(1),
+      }),
+      model: z.object({
+         label: z.string().min(1),
+         value: z.string().min(1),
+      }),
       bodyType: z.array(
          z.object({
             label: z.string().min(1),
@@ -134,8 +133,6 @@ export default function OfferFilters() {
       mode: "onSubmit",
       reValidateMode: "onSubmit",
       defaultValues: {
-         brand: [],
-         model: [],
          bodyType: [],
          fuelType: [],
          transmissionType: [],
@@ -152,25 +149,25 @@ export default function OfferFilters() {
          className="flex flex-wrap gap-3"
          noValidate
       >
-         <Multiselect
+         <SingleSearchSelect
             items={items}
             control={control}
             name={"brand"}
             label={"Marka"}
             setValue={setValue}
             resetField={resetField}
-            notFound="sdd"
-            searchMessage="sdf"
+            notFound="Nie znaleziono marki."
+            searchMessage="Wpisz nazwę marki."
          />
-         <Multiselect
+         <SingleSearchSelect
             items={items}
             control={control}
             name={"model"}
             label={"Model"}
             setValue={setValue}
             resetField={resetField}
-            notFound="sdd"
-            searchMessage="sdf"
+            notFound="Nie znaleziono modelu."
+            searchMessage="Wyszkuaj nazwę modelu."
          />
          <Multiselect
             items={items}
@@ -179,8 +176,8 @@ export default function OfferFilters() {
             label={"Typ nadwozia"}
             setValue={setValue}
             resetField={resetField}
-            notFound="sdd"
-            searchMessage="sdf"
+            notFound="Nie znaleziono typu nadwozia."
+            searchMessage="Wyszukaj nadwozie."
          />
          <Multiselect
             items={items}
@@ -189,8 +186,8 @@ export default function OfferFilters() {
             label={"Rodzaj Paliwa"}
             setValue={setValue}
             resetField={resetField}
-            notFound="sdd"
-            searchMessage="sdf"
+            notFound="Nie znaleziono rodzaju paliwa."
+            searchMessage="Wyszkuaj rodzaj paliwa."
          />
          <Multiselect
             items={items}
@@ -199,8 +196,8 @@ export default function OfferFilters() {
             label={"Rodzaj skrzyni"}
             setValue={setValue}
             resetField={resetField}
-            notFound="sdd"
-            searchMessage="sdf"
+            notFound="Nie znaleziono skrzyni biegów."
+            searchMessage="Wyszukaj skrzynię biegów."
          />
 
          <MinMaxInput
@@ -243,24 +240,25 @@ export default function OfferFilters() {
             minName={"minMileage"}
             maxName={"maxMileage"}
          />
-
-         <Controller
-            name="sort"
+         <MinMaxInput
+            setValue={setValue}
+            label={"Cena"}
+            register={register}
+            resetField={resetField}
+            minError={errors.minPrice?.message}
+            maxError={errors.maxPrice?.message}
+            minName={"minPrice"}
+            maxName={"maxPrice"}
+         />
+         <SingleSearchSelect
+            items={items}
             control={control}
-            render={({ field }) => (
-               <Select {...field} onValueChange={field.onChange}>
-                  <SelectTrigger className="w-[180px]">
-                     <SelectValue placeholder="Sortuj" />
-                  </SelectTrigger>
-                  <SelectContent>
-                     <SelectItem value="gas">Benzyna</SelectItem>
-                     <SelectItem value="diesel">Diesel</SelectItem>
-                     <SelectItem value="hydrogen">Wodór</SelectItem>
-                     <SelectItem value="electric">Elektryczny</SelectItem>
-                     <SelectItem value="other">Inny</SelectItem>
-                  </SelectContent>
-               </Select>
-            )}
+            name={"sort"}
+            setValue={setValue}
+            resetField={resetField}
+            label={"Sortuj"}
+            notFound={"Nie znaloeziono."}
+            searchMessage={""}
          />
 
          <Button type="submit">Szukaj</Button>

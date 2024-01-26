@@ -10,12 +10,14 @@ import SearchBar from "./ui/search-bar"
 
 function Navbar() {
    return (
-      <div className="sticky z-[9999] flex w-full justify-center bg-secondary pt-5">
+      <div className="sticky z-[9999] flex w-full justify-center bg-secondary py-5 md:py-0 md:pt-5">
          <div className="flex w-full max-w-[1440px] flex-col">
             <section className="flex w-full justify-between px-5">
                <div className="flex w-full items-center gap-7">
                   <Logo />
-                  <SearchBar />
+                  <div className="hidden w-full sm:block">
+                     <SearchBar />
+                  </div>
                </div>
                <div className="flex items-center">
                   <div>
@@ -32,7 +34,7 @@ function Navbar() {
                   <MenuDropdown />
                </div>
             </section>
-            <section className="flex w-full justify-start p-2 ps-24">
+            <section className="hidden w-full justify-start p-2 ps-24 md:flex">
                <MenuPanel />
             </section>
          </div>

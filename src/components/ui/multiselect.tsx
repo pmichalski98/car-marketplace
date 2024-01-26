@@ -1,7 +1,7 @@
 "use client"
 
 import { PopoverClose } from "@radix-ui/react-popover"
-import { ChevronsUpDown } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import { Controller } from "react-hook-form"
 
 import { cn } from "@/lib/utils"
@@ -49,12 +49,12 @@ function Multiselect({
             <div
                role="combobox"
                className={cn(
-                  buttonVariants({ variant: "secondary" }),
-                  "justify-between"
+                  buttonVariants({ variant: "outline" }),
+                  "w-min-[100px] flex h-8 justify-between border-black"
                )}
             >
                {label}
-               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+               <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </div>
          </PopoverTrigger>
          <PopoverContent className="w-[300px] p-0">

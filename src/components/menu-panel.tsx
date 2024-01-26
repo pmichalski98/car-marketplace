@@ -42,7 +42,7 @@ function MenuPanel() {
                   side={"top"}
                   className="top-32 flex justify-center"
                >
-                  <SheetHeader className="w-full max-w-[1440px]">
+                  <SheetHeader className="flex w-full max-w-[1440px] flex-col gap-5">
                      <SheetTitle>Wyszukiwanie zaawansowane:</SheetTitle>
                      <OfferFilters />
                   </SheetHeader>
