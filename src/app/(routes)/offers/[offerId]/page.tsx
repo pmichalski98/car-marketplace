@@ -4,6 +4,7 @@ import { CarOffer } from "@prisma/client"
 import { Car, MapPin, Star, Upload } from "lucide-react"
 
 import { prisma } from "@/lib/db"
+import { getFormattedCurrency, getImageUrl } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
@@ -71,7 +72,7 @@ async function OfferPage({ params }: { params: { offerId: string } }) {
                            className="relative aspect-square"
                         >
                            <Image
-                              src={`https://cool-car-marketplace.s3.eu-north-1.amazonaws.com/${image.id}`}
+                              src={getImageUrl(image.id)}
                               alt={""}
                               className="rounded-lg object-cover object-center"
                               fill
@@ -99,7 +100,7 @@ async function OfferPage({ params }: { params: { offerId: string } }) {
                            </>
                         ) : null}
                         <Image
-                           src={`https://cool-car-marketplace.s3.eu-north-1.amazonaws.com/${image.id}`}
+                           src={getImageUrl(image.id)}
                            key={image.id}
                            alt={"Offer photo"}
                            className="z-0 object-cover object-center"
@@ -147,7 +148,7 @@ async function OfferPage({ params }: { params: { offerId: string } }) {
                            <li className="flex items-center gap-2">
                               <p className="text-lg font-medium">Cena</p>
                               <span className="text-red-500">
-                                 {offer.price} PLN
+                                 {getFormattedCurrency(offer.price)}
                               </span>
                            </li>
                         </ul>

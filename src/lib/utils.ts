@@ -29,4 +29,12 @@ function getFilenameFromUrl(url: string): string {
    return urlParts[urlParts.length - 1]
 }
 
+export function getImageUrl(imageId: string) {
+   return `https://cool-car-marketplace.s3.eu-north-1.amazonaws.com/${imageId}`
+}
 
+export const getFormattedCurrency = (value: number) =>
+   new Intl.NumberFormat("pl", {
+      style: "currency",
+      currency: "PLN",
+   }).format(value)

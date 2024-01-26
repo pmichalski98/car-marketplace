@@ -4,6 +4,7 @@ import Link from "next/link"
 import { CarOffer as CarOfferType, Images } from "@prisma/client"
 import { CircleDollarSign, MapPin, Star } from "lucide-react"
 
+import { getFormattedCurrency, getImageUrl } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
    Tooltip,
@@ -27,7 +28,7 @@ function CarOffer({ carOffer }: CarOfferProps) {
                      className="rounded-lg object-cover"
                      sizes="100vw"
                      fill
-                     src={`https://cool-car-marketplace.s3.eu-north-1.amazonaws.com/${carOffer.images[0].id}`}
+                     src={getImageUrl(carOffer.images[0].id)}
                      alt={"Main car offer image"}
                   />
                   <div className="absolute  right-2 top-2 z-40 ">
@@ -69,10 +70,7 @@ function CarOffer({ carOffer }: CarOfferProps) {
                   <div className="flex items-center gap-1">
                      <CircleDollarSign size={20} />
                      <p className="font-bold text-rose-500">
-                        {carOffer.price.toLocaleString("pl-PL", {
-                           currency: "PLN",
-                           style: "currency",
-                        })}
+                        {getFormattedCurrency(carOffer.price)}
                      </p>
                   </div>
                </div>
