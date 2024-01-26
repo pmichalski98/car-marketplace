@@ -27,24 +27,14 @@ async function OfferPage({ params }: { params: { offerId: string } }) {
       where: {
          id: params.offerId,
       },
+      include: {
+         images: true,
+      },
    })
 
    if (!offer) {
       return notFound()
    }
-
-   const images = [
-      "/miata.jpg",
-      "/miata.jpg",
-      "/miata.jpg",
-      "/miata.jpg",
-      "/miata.jpg",
-      "/miata.jpg",
-      "/miata.jpg",
-      "/miata.jpg",
-      "/miata.jpg",
-      "/miata.jpg",
-   ]
 
    return (
       <main className="flex justify-center">
@@ -75,13 +65,13 @@ async function OfferPage({ params }: { params: { offerId: string } }) {
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                <Carousel className="w-full">
                   <CarouselContent>
-                     {Array.from({ length: 5 }).map((_, index) => (
+                     {offer.images.map((image, index) => (
                         <CarouselItem
                            key={index}
                            className="relative aspect-square"
                         >
                            <Image
-                              src={"/miata.jpg"}
+                              src={`https://cool-car-marketplace.s3.eu-north-1.amazonaws.com/${image.id}`}
                               alt={""}
                               className="rounded-lg object-cover object-center"
                               fill
@@ -93,25 +83,25 @@ async function OfferPage({ params }: { params: { offerId: string } }) {
                   <CarouselNext className="absolute right-10" />
                </Carousel>
                <div className="grid w-full grid-cols-2 place-content-between gap-x-2 gap-y-2 md:gap-y-0">
-                  {images.slice(0, 4).map((image, index) => (
+                  {offer.images.slice(0, 4).map((image, index) => (
                      <div
                         className="relative aspect-square w-full cursor-pointer overflow-hidden rounded-lg"
-                        key={index}
+                        key={image.id}
                      >
-                        {index === 3 && images.length > 4 ? (
+                        {index === 3 && offer.images.length > 4 ? (
                            <>
                               <div className="absolute top-0 z-20 h-full w-full bg-black/40 hover:bg-black/60" />
                               <div className="absolute flex h-full w-full items-center justify-center">
                                  <p className="z-30 text-5xl text-white">
-                                    +{images.length - 4}
+                                    +{offer.images.length - 4}
                                  </p>
                               </div>
                            </>
                         ) : null}
                         <Image
-                           src={image}
-                           key={index}
-                           alt={""}
+                           src={`https://cool-car-marketplace.s3.eu-north-1.amazonaws.com/${image.id}`}
+                           key={image.id}
+                           alt={"Offer photo"}
                            className="z-0 object-cover object-center"
                            fill
                         />
