@@ -1,7 +1,7 @@
 "use client"
 
 import { PopoverClose } from "@radix-ui/react-popover"
-import { AlertCircle, ChevronsUpDown } from "lucide-react"
+import { AlertCircle, ChevronDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -46,15 +46,15 @@ function MinMaxInput({
             <div
                role="combobox"
                className={cn(
-                  buttonVariants({ variant: "secondary" }),
-                  "flex justify-between gap-3"
+                  buttonVariants({ variant: "outline" }),
+                  "w-min-[100px] flex h-8 justify-between gap-3 border-black"
                )}
             >
                {label}
                {minError || maxError ? (
                   <AlertCircle className="size-5 text-red-500" />
                ) : (
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  <ChevronDown className=" h-4 w-4 shrink-0 opacity-50" />
                )}
             </div>
          </PopoverTrigger>
