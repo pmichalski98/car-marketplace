@@ -5,6 +5,7 @@ import {
    rectSwappingStrategy,
    SortableContext,
 } from "@dnd-kit/sortable"
+import { PlusIcon } from "lucide-react"
 import { FileWithPath, useDropzone } from "react-dropzone"
 
 import SortableItem from "./sortable-item"
@@ -71,7 +72,7 @@ function DropzoneField({
                      items={imagePreviews}
                      strategy={rectSwappingStrategy}
                   >
-                     <div className="grid grid-cols-2">
+                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                         {imagePreviews.map((path, index) => (
                            <SortableItem
                               key={path}
@@ -87,14 +88,14 @@ function DropzoneField({
          )}
          <div
             {...getRootProps()}
-            className={`flex h-28 items-center justify-center rounded-md border-2 border-dashed p-4 ${
+            className={`flex min-h-56 cursor-pointer items-center justify-center rounded-md border-2 border-dashed p-4 hover:bg-secondary lg:w-1/2 ${
                isDragActive ? "bg-gray-100" : ""
             }`}
          >
             <input {...getInputProps({ multiple: true, required: true })} />
-            <p>
-               Przeciągnij i upuść niektóre pliki tutaj lub kliknij, aby wybrać
-               pliki
+            <p className="px-4 text-center font-medium lg:px-10">
+               Przeciągnij i upuść pliki lub kliknij, aby wybrać
+               <PlusIcon className="mx-auto" size={30} />
             </p>
          </div>
       </>

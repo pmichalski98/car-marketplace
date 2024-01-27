@@ -52,7 +52,7 @@ function MenuPanel() {
       },
       {
          label: "Dodaj ogłoszenie",
-         href: "/",
+         href: "/dashboard/offer-create",
       },
       {
          label: "Kontakt",

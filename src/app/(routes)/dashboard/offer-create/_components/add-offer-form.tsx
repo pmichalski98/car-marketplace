@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { router } from "next/client"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -30,7 +30,7 @@ import { formSchema } from "@/app/(routes)/dashboard/offer-create/formSchema"
 
 import DropzoneField from "./dropzone-field"
 
-type FormData = z.infer<typeof formSchema>
+export type FormData = z.infer<typeof formSchema>
 
 function AddOfferForm() {
    const {
@@ -38,12 +38,24 @@ function AddOfferForm() {
       handleSubmit,
       control,
       reset,
+      setValue,
+      getValues,
       formState: { errors, isSubmitting },
    } = useForm<FormData>({
       resolver: zodResolver(formSchema),
       mode: "onSubmit",
       reValidateMode: "onSubmit",
    })
+
+   const handleResizeHeight = (event: ChangeEvent<HTMLTextAreaElement>) => {
+      event.target.style.height = "inherit"
+      event.target.style.height = `${event.target.scrollHeight}px`
+   }
+
+   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+      setValue("description", event.target.value)
+      handleResizeHeight(event) // Ensure textarea resizes
+   }
 
    const [imagePreviews, setImagePreviews] = useState<string[]>([])
    const router = useRouter()
@@ -56,14 +68,12 @@ function AddOfferForm() {
             const file = await urlToFile(url)
 
             if (file) {
-               // Append the file to the FormData outside of the async block
                data.append("images", file)
             }
          })
       )
 
       Object.entries(formData).forEach(([key, value]) => {
-         console.log(key, value)
          data.append(key, String(value))
       })
 
@@ -79,7 +89,7 @@ function AddOfferForm() {
    }
 
    return (
-      <>
+      <div className="bg-secondary/60 p-4 lg:p-10">
          <DropzoneField
             imagePreviews={imagePreviews}
             setImagePreviews={setImagePreviews}
@@ -87,7 +97,7 @@ function AddOfferForm() {
          <form
             onSubmit={handleSubmit(onSubmit)}
             noValidate
-            className="flex w-full max-w-xl flex-col gap-5 pt-6"
+            className="flex w-full flex-col gap-5 pt-6"
          >
             <div className={"relative"}>
                <Label htmlFor="title">Tytuł</Label>
@@ -113,28 +123,69 @@ function AddOfferForm() {
                   </TooltipProvider>
                )}
             </div>
-            <div className={"relative"}>
-               <Label htmlFor="description">Opis</Label>
-               <Textarea
-                  id="description"
-                  placeholder="Lorem ipsum lorem ipsum"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  disabled={isSubmitting}
-                  {...register("description")}
-               />
-               {errors.description && (
-                  <TooltipProvider>
-                     <Tooltip>
-                        <TooltipTrigger className="absolute bottom-2 right-3 text-red-500">
-                           <AlertCircle />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                           <p>{errors.description.message}</p>
-                        </TooltipContent>
-                     </Tooltip>
-                  </TooltipProvider>
-               )}
+            <div className={"relative flex gap-10 "}>
+               <div className="w-full">
+                  <Label htmlFor="description">Opis</Label>
+                  <Textarea
+                     className="basis-2/3 resize-none overflow-y-hidden"
+                     id="description"
+                     placeholder="Lorem ipsum lorem ipsum"
+                     autoCapitalize="none"
+                     autoCorrect="off"
+                     disabled={isSubmitting}
+                     {...register("description")}
+                     onChange={(e) => handleChange(e)}
+                  />
+                  {errors.description && (
+                     <TooltipProvider>
+                        <Tooltip>
+                           <TooltipTrigger className="absolute bottom-2 right-3 text-red-500">
+                              <AlertCircle />
+                           </TooltipTrigger>
+                           <TooltipContent>
+                              <p>{errors.description.message}</p>
+                           </TooltipContent>
+                        </Tooltip>
+                     </TooltipProvider>
+                  )}
+               </div>
+               <div className={"relative flex gap-2"}>
+                  <div>
+                     <Label>Lokalizacja</Label>
+                     <Controller
+                        name="fuelType"
+                        control={control}
+                        render={({ field }) => (
+                           <Select {...field} onValueChange={field.onChange}>
+                              <SelectTrigger className="w-[180px]">
+                                 <SelectValue placeholder="Inny" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                 <SelectItem value="gas">Benzyna</SelectItem>
+                                 <SelectItem value="diesel">Diesel</SelectItem>
+                                 <SelectItem value="hydrogen">Wodór</SelectItem>
+                                 <SelectItem value="electric">
+                                    Elektryczny
+                                 </SelectItem>
+                                 <SelectItem value="other">Inny</SelectItem>
+                              </SelectContent>
+                           </Select>
+                        )}
+                     />
+                  </div>
+                  {errors.fuelType && (
+                     <TooltipProvider>
+                        <Tooltip>
+                           <TooltipTrigger className="mt-6 text-red-500">
+                              <AlertCircle />
+                           </TooltipTrigger>
+                           <TooltipContent>
+                              <p>{errors.fuelType.message}</p>
+                           </TooltipContent>
+                        </Tooltip>
+                     </TooltipProvider>
+                  )}
+               </div>
             </div>
             <div className={"relative"}>
                <Label htmlFor="mileage">Przebieg (km)</Label>
@@ -332,7 +383,7 @@ function AddOfferForm() {
 
             <Button>Potwierdź</Button>
          </form>
-      </>
+      </div>
    )
 }
 
