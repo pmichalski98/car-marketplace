@@ -38,3 +38,15 @@ model Images {
     carOffer CarOffer @relation(fields: [carOfferId], references: [id])
     carOfferId String
 }
+
+model Make {
+    make String @id
+    models Model[]
+}
+
+model Model {
+    id String @id @default(uuid())
+    model String
+    make Make @relation(fields: [makeId], references: [make])
+    makeId String
+}
