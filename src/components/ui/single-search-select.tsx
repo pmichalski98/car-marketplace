@@ -48,7 +48,7 @@ function SingleSearchSelect({
          control={control}
          name={name}
          render={({ field }) => (
-            <Popover>
+            <Popover modal={true}>
                <PopoverTrigger
                   disabled={disabled}
                   className={cn(disabled ? "opacity-65" : null)}
@@ -57,11 +57,11 @@ function SingleSearchSelect({
                      role="combobox"
                      className={cn(
                         buttonVariants({ variant: "outline" }),
-                        "w-min-[100px] flex h-8 justify-between border-black"
+                        "flex h-8 w-[160px] justify-between border-black"
                      )}
                   >
-                     {field.value ? field.value.label : label}
-                     <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                     <p>{field.value ? field.value.label : label}</p>
+                     <ChevronDown className=" relative right-0 h-4 w-4 shrink-0 opacity-50" />
                   </div>
                </PopoverTrigger>
                <PopoverContent className="w-[300px] overflow-hidden p-0">

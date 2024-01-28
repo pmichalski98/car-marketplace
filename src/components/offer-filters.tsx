@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Make, Model } from "@prisma/client"
 import { PopoverClose } from "@radix-ui/react-popover"
 import axios from "axios"
 import { ChevronDown } from "lucide-react"
@@ -27,6 +28,7 @@ import { Checkbox } from "./ui/checkbox"
 import { Label } from "./ui/label"
 import MinMaxInput from "./ui/min-max-input"
 import Multiselect from "./ui/multiselect"
+import { ScrollArea } from "./ui/scroll-area"
 import SingleSearchSelect from "./ui/single-search-select"
 
 const items = [
@@ -137,14 +139,18 @@ const formSchema = z
 type FormData = z.infer<typeof formSchema>
 
 interface OfferFiltersProps {
-   brandItems: { label: string; value: string }[]
+   brandsData: {
+      models: Model[]
+      make: string
+   }[]
 }
 
-export default function OfferFilters({ brandItems }: OfferFiltersProps) {
+export default function OfferFilters({ brandsData }: OfferFiltersProps) {
    const [brand, setBrand] = useState<undefined | string>()
    const [modelItems, setModelItems] = useState<
-      { label: string; value: string }[]
+      { value: string; label: string }[]
    >([])
+
    const {
       register,
       handleSubmit,
@@ -166,27 +172,29 @@ export default function OfferFilters({ brandItems }: OfferFiltersProps) {
    function onSubmit(formData: FormData) {
       console.log(formData)
    }
+   const brandItems = useMemo(() => {
+      return brandsData.map((brandValue) => ({
+         label: brandValue.make,
+         value: brandValue.make,
+      }))
+   }, [brandsData])
 
    useEffect(() => {
-      const fetchData = async () => {
-         resetField("model")
-         try {
-            const response = await axios.get("/api/get-models", {
-               params: { brand: brand },
-            })
+      resetField("model")
 
-            console.log(response)
+      const selectedBrand = brandsData.filter((brandValue) =>
+         brandValue.make === brand ? brandValue.models : null
+      )
 
-            setModelItems(
-               response.data.newModelItems ? response.data.newModelItems : []
-            )
-         } catch (error) {
-            console.error("Error fetching data:", error)
-         }
-      }
-      if (brand !== undefined) {
-         fetchData()
-      }
+      const newModelItems =
+         selectedBrand.length > 0
+            ? selectedBrand[0].models.map((modelValue) => ({
+                 label: modelValue.model,
+                 value: modelValue.model,
+              }))
+            : []
+
+      setModelItems(newModelItems)
    }, [brand])
 
    return (
@@ -199,31 +207,32 @@ export default function OfferFilters({ brandItems }: OfferFiltersProps) {
             control={control}
             name={"brand"}
             render={({ field }) => (
-               <Popover>
+               <Popover modal={true}>
                   <PopoverTrigger>
                      <div
                         role="combobox"
                         className={cn(
                            buttonVariants({ variant: "outline" }),
-                           "w-min-[100px] flex h-8 justify-between border-black"
+                           "flex h-8 w-[160px] justify-between border-black"
                         )}
                      >
-                        {field.value ? field.value.label : "Marka"}
-                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        <p>{field.value ? field.value.label : "Marka"}</p>
+                        <ChevronDown className=" relative right-0 h-4 w-4 shrink-0 opacity-50" />
                      </div>
                   </PopoverTrigger>
                   <PopoverContent className="w-[300px] overflow-hidden p-0">
                      <Command>
-                        <CommandInput placeholder={"Wyszukaj markę."} />
-                        <CommandEmpty>{"Nie znaleziono marki."}</CommandEmpty>
+                        <CommandInput placeholder={"Wyszukaj markę"} />
+                        <CommandEmpty>{"Nie znaleziono marki"}</CommandEmpty>
+
                         <CommandGroup className="max-h-52 overflow-y-auto">
                            {brandItems.map((item) => (
                               <CommandItem
                                  value={item.label}
-                                 key={item.value}
+                                 key={item.label}
                                  onSelect={() => {
                                     setValue("brand", item)
-                                    setBrand(item.value)
+                                    setBrand(item.label)
                                  }}
                                  className="flex gap-2 px-0 py-0"
                               >
@@ -276,8 +285,8 @@ export default function OfferFilters({ brandItems }: OfferFiltersProps) {
             label={"Model"}
             setValue={setValue}
             resetField={resetField}
-            notFound="Nie znaleziono modelu."
-            searchMessage="Wyszkuaj nazwę modelu."
+            notFound="Nie znaleziono modelu"
+            searchMessage="Wyszkuaj nazwę modelu"
             disabled={!brand || !modelItems}
          />
          <Multiselect
@@ -287,8 +296,8 @@ export default function OfferFilters({ brandItems }: OfferFiltersProps) {
             label={"Typ nadwozia"}
             setValue={setValue}
             resetField={resetField}
-            notFound="Nie znaleziono typu nadwozia."
-            searchMessage="Wyszukaj nadwozie."
+            notFound="Nie znaleziono typu nadwozia"
+            searchMessage="Wyszukaj nadwozie"
          />
          <Multiselect
             items={items}
@@ -297,8 +306,8 @@ export default function OfferFilters({ brandItems }: OfferFiltersProps) {
             label={"Rodzaj Paliwa"}
             setValue={setValue}
             resetField={resetField}
-            notFound="Nie znaleziono rodzaju paliwa."
-            searchMessage="Wyszkuaj rodzaj paliwa."
+            notFound="Nie znaleziono rodzaju paliwa"
+            searchMessage="Wyszkuaj rodzaj paliwa"
          />
          <Multiselect
             items={items}
@@ -307,8 +316,8 @@ export default function OfferFilters({ brandItems }: OfferFiltersProps) {
             label={"Rodzaj skrzyni"}
             setValue={setValue}
             resetField={resetField}
-            notFound="Nie znaleziono skrzyni biegów."
-            searchMessage="Wyszukaj skrzynię biegów."
+            notFound="Nie znaleziono skrzyni biegów"
+            searchMessage="Wyszukaj skrzynię biegów"
          />
 
          <MinMaxInput
@@ -368,7 +377,7 @@ export default function OfferFilters({ brandItems }: OfferFiltersProps) {
             setValue={setValue}
             resetField={resetField}
             label={"Sortuj"}
-            notFound={"Nie znaloeziono."}
+            notFound={"Nie znaloeziono"}
             searchMessage={""}
          />
 

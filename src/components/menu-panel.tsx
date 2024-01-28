@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { Make, Model } from "@prisma/client"
 import { ChevronDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -22,10 +23,13 @@ import {
 import OfferFilters from "./offer-filters"
 
 interface MenuPanelProps {
-   brandItems: { label: string; value: string }[]
+   brandsData: {
+      models: Model[]
+      make: string
+   }[]
 }
 
-function MenuPanel({ brandItems }: MenuPanelProps) {
+function MenuPanel({ brandsData }: MenuPanelProps) {
    const ROUTES = [
       {
          label: "Nowości",
@@ -48,7 +52,7 @@ function MenuPanel({ brandItems }: MenuPanelProps) {
                >
                   <SheetHeader className="flex w-full max-w-[1440px] flex-col gap-5">
                      <SheetTitle>Wyszukiwanie zaawansowane:</SheetTitle>
-                     <OfferFilters brandItems={brandItems} />
+                     <OfferFilters brandsData={brandsData} />
                   </SheetHeader>
                </SheetContent>
             </Sheet>

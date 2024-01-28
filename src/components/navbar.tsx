@@ -13,9 +13,10 @@ import SearchBar from "./ui/search-bar"
 async function Navbar() {
    const user = auth()
 
-   const brands = await prisma.make.findMany()
-   const brandItems = brands.map((brand) => {
-      return { label: brand.make, value: brand.make }
+   const brandsData = await prisma.make.findMany({
+      include: {
+         models: true,
+      },
    })
 
    return (
@@ -45,7 +46,7 @@ async function Navbar() {
             </section>
 
             <section className="hidden w-full justify-start p-2 ps-24 md:flex">
-               <MenuPanel brandItems={brandItems} />
+               <MenuPanel brandsData={brandsData} />
             </section>
          </div>
       </div>
