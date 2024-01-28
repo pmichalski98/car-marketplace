@@ -10,8 +10,6 @@ import { buttonVariants } from "./ui/button"
 import Logo from "./ui/logo"
 import SearchBar from "./ui/search-bar"
 
-export const dynamic = "force-static"
-
 async function Navbar() {
    const user = auth()
 
