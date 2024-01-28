@@ -68,7 +68,7 @@ function SingleSearchSelect({
                   <Command>
                      <CommandInput placeholder={searchMessage} />
                      <CommandEmpty>{notFound}</CommandEmpty>
-                     <CommandGroup>
+                     <CommandGroup className="max-h-52 overflow-y-auto">
                         {items.map((item) => (
                            <CommandItem
                               value={item.label}

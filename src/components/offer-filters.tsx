@@ -216,7 +216,7 @@ export default function OfferFilters({ brandItems }: OfferFiltersProps) {
                      <Command>
                         <CommandInput placeholder={"Wyszukaj markę."} />
                         <CommandEmpty>{"Nie znaleziono marki."}</CommandEmpty>
-                        <CommandGroup>
+                        <CommandGroup className="max-h-52 overflow-y-auto">
                            {brandItems.map((item) => (
                               <CommandItem
                                  value={item.label}
@@ -278,7 +278,7 @@ export default function OfferFilters({ brandItems }: OfferFiltersProps) {
             resetField={resetField}
             notFound="Nie znaleziono modelu."
             searchMessage="Wyszkuaj nazwę modelu."
-            disabled={!brand}
+            disabled={!brand || !modelItems}
          />
          <Multiselect
             items={items}
