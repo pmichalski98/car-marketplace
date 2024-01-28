@@ -169,6 +169,7 @@ export default function OfferFilters({ brandItems }: OfferFiltersProps) {
 
    useEffect(() => {
       const fetchData = async () => {
+         resetField("model")
          try {
             const response = await axios.get("/api/get-models", {
                params: { brand: brand },
