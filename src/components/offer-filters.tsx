@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PopoverClose } from "@radix-ui/react-popover"
+import axios from "axios"
 import { ChevronDown } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
@@ -32,7 +33,6 @@ const items = [
    { label: "English", value: "en" },
    { label: "French", value: "fr" },
    { label: "German", value: "de" },
-   { label: "Spanish", value: "es" },
    { label: "Portuguese", value: "pt" },
    { label: "Russian", value: "ru" },
    { label: "Japanese", value: "ja" },
@@ -136,8 +136,12 @@ const formSchema = z
 
 type FormData = z.infer<typeof formSchema>
 
-export default function OfferFilters() {
-   const [brand, setBrand] = useState<undefined | string>(undefined)
+interface OfferFiltersProps {
+   brandItems: { label: string; value: string }[]
+}
+
+export default function OfferFilters({ brandItems }: OfferFiltersProps) {
+   const [brand, setBrand] = useState<undefined | string>()
    const [modelItems, setModelItems] = useState<
       { label: string; value: string }[]
    >([])
@@ -164,7 +168,24 @@ export default function OfferFilters() {
    }
 
    useEffect(() => {
-      console.log(brand)
+      const fetchData = async () => {
+         try {
+            const response = await axios.get("/api/get-models", {
+               params: { brand: brand },
+            })
+
+            console.log(response)
+
+            setModelItems(
+               response.data.newModelItems ? response.data.newModelItems : []
+            )
+         } catch (error) {
+            console.error("Error fetching data:", error)
+         }
+      }
+      if (brand !== undefined) {
+         fetchData()
+      }
    }, [brand])
 
    return (
@@ -195,7 +216,7 @@ export default function OfferFilters() {
                         <CommandInput placeholder={"Wyszukaj markę."} />
                         <CommandEmpty>{"Nie znaleziono marki."}</CommandEmpty>
                         <CommandGroup>
-                           {items.map((item) => (
+                           {brandItems.map((item) => (
                               <CommandItem
                                  value={item.label}
                                  key={item.value}
@@ -246,16 +267,6 @@ export default function OfferFilters() {
                </Popover>
             )}
          />
-         {/* <SingleSearchSelect
-            items={items}
-            control={control}
-            name={"brand"}
-            label={"Marka"}
-            setValue={setValue}
-            resetField={resetField}
-            notFound="Nie znaleziono marki."
-            searchMessage="Wpisz nazwę marki."
-         /> */}
 
          <SingleSearchSelect
             items={modelItems}

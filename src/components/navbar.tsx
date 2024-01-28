@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { auth } from "@clerk/nextjs"
 
+import { prisma } from "@/lib/db"
 import { cn } from "@/lib/utils"
 
 import MenuDropdown from "./menu-dropdown"
@@ -9,8 +10,14 @@ import { buttonVariants } from "./ui/button"
 import Logo from "./ui/logo"
 import SearchBar from "./ui/search-bar"
 
-function Navbar() {
+async function Navbar() {
    const user = auth()
+
+   const brands = await prisma.make.findMany()
+   const brandItems = brands.map((brand) => {
+      return { label: brand.make, value: brand.make }
+   })
+
    return (
       <div className="sticky z-[9999] flex w-full justify-center bg-secondary py-5 md:py-0 md:pt-5">
          <div className="flex w-full max-w-[1440px] flex-col">
@@ -38,7 +45,7 @@ function Navbar() {
             </section>
 
             <section className="hidden w-full justify-start p-2 ps-24 md:flex">
-               <MenuPanel />
+               <MenuPanel brandItems={brandItems} />
             </section>
          </div>
       </div>
