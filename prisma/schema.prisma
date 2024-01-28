@@ -1,52 +1,49 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url = env("POSTGRES_PRISMA_URL")
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
 model User {
-    id    String     @id
-    carOffers CarOffer[]
+  id        String     @id
+  carOffers CarOffer[]
 }
 
 model CarOffer {
-    id        String     @id @default(uuid())
-    createdAt  DateTime  @default(now())
-    updatedAt  DateTime?
-    title     String
-    description String
-    mileage Int
-    transmission String
-    manufacturer String
-    fuelType String
-    prodYear Int
-    color String
-    price Int
-    images Images[]
-    user    User    @relation(fields: [userId], references: [id])
-    userId  String
+  id           String    @id @default(uuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime?
+  title        String
+  description  String
+  mileage      Int
+  transmission String
+  manufacturer String
+  fuelType     String
+  prodYear     Int
+  color        String
+  price        Int
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+  images       Images[]
 }
 
 model Images {
-    id String @id
-    carOffer CarOffer @relation(fields: [carOfferId], references: [id])
-    carOfferId String
+  id         String   @id
+  carOfferId String
+  carOffer   CarOffer @relation(fields: [carOfferId], references: [id])
 }
 
 model Make {
-    make String @id
-    models Model[]
+  make   String  @id
+  models Model[]
 }
 
 model Model {
-    id String @id @default(uuid())
-    model String
-    make Make @relation(fields: [makeId], references: [make])
-    makeId String
+  id     String @id @default(uuid())
+  model  String
+  makeId String
+  make   Make   @relation(fields: [makeId], references: [make])
 }

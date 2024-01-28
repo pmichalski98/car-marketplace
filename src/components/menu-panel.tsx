@@ -21,7 +21,11 @@ import {
 
 import OfferFilters from "./offer-filters"
 
-function MenuPanel() {
+interface MenuPanelProps {
+   brandItems: { label: string; value: string }[]
+}
+
+function MenuPanel({ brandItems }: MenuPanelProps) {
    const ROUTES = [
       {
          label: "Nowości",
@@ -44,7 +48,7 @@ function MenuPanel() {
                >
                   <SheetHeader className="flex w-full max-w-[1440px] flex-col gap-5">
                      <SheetTitle>Wyszukiwanie zaawansowane:</SheetTitle>
-                     <OfferFilters />
+                     <OfferFilters brandItems={brandItems} />
                   </SheetHeader>
                </SheetContent>
             </Sheet>

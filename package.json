@@ -28,6 +28,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@vercel/postgres": "^0.5.1",
     "aws-sdk": "^2.1540.0",
+    "axios": "^1.6.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^0.2.0",
