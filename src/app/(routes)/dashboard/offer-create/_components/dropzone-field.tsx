@@ -94,7 +94,7 @@ function DropzoneField({
          >
             <input {...getInputProps({ multiple: true, required: true })} />
             <p className="px-4 text-center font-medium lg:px-10">
-               Przeciągnij i upuść pliki lub kliknij, aby wybrać
+               Przeciągnij i upuść pliki lub <br /> kliknij, aby wybrać
                <PlusIcon className="mx-auto" size={30} />
             </p>
          </div>

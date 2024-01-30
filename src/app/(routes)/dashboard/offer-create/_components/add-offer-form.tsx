@@ -1,7 +1,6 @@
 "use client"
 
-import { ChangeEvent, useEffect, useRef, useState } from "react"
-import { router } from "next/client"
+import { ChangeEvent, useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AlertCircle } from "lucide-react"
@@ -32,7 +31,7 @@ import DropzoneField from "./dropzone-field"
 
 export type FormData = z.infer<typeof formSchema>
 
-function AddOfferForm() {
+export default function AddOfferForm() {
    const {
       register,
       handleSubmit,
@@ -99,57 +98,32 @@ function AddOfferForm() {
             noValidate
             className="flex w-full flex-col gap-5 pt-6"
          >
-            <div className={"relative"}>
-               <Label htmlFor="title">Tytuł</Label>
-               <Input
-                  id="title"
-                  placeholder="Nissan Patrol.."
-                  type="text"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  disabled={isSubmitting}
-                  {...register("title")}
-               />
-               {errors.title && (
-                  <TooltipProvider>
-                     <Tooltip>
-                        <TooltipTrigger className="absolute bottom-2 right-3 text-red-500">
-                           <AlertCircle />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                           <p>{errors.title.message}</p>
-                        </TooltipContent>
-                     </Tooltip>
-                  </TooltipProvider>
-               )}
-            </div>
-            <div className={"relative flex gap-10 "}>
-               <div className="w-full">
-                  <Label htmlFor="description">Opis</Label>
-                  <Textarea
-                     className="basis-2/3 resize-none overflow-y-hidden"
-                     id="description"
-                     placeholder="Lorem ipsum lorem ipsum"
+            <div className="flex space-x-12">
+               <div className={"relative basis-2/3"}>
+                  <Label htmlFor="title">Tytuł</Label>
+                  <Input
+                     id="title"
+                     placeholder="Nissan Patrol.."
+                     type="text"
                      autoCapitalize="none"
                      autoCorrect="off"
                      disabled={isSubmitting}
-                     {...register("description")}
-                     onChange={(e) => handleChange(e)}
+                     {...register("title")}
                   />
-                  {errors.description && (
+                  {errors.title && (
                      <TooltipProvider>
                         <Tooltip>
                            <TooltipTrigger className="absolute bottom-2 right-3 text-red-500">
                               <AlertCircle />
                            </TooltipTrigger>
                            <TooltipContent>
-                              <p>{errors.description.message}</p>
+                              <p>{errors.title.message}</p>
                            </TooltipContent>
                         </Tooltip>
                      </TooltipProvider>
                   )}
                </div>
-               <div className={"relative flex gap-2"}>
+               <div className={"relative"}>
                   <div>
                      <Label>Lokalizacja</Label>
                      <Controller
@@ -181,6 +155,33 @@ function AddOfferForm() {
                            </TooltipTrigger>
                            <TooltipContent>
                               <p>{errors.fuelType.message}</p>
+                           </TooltipContent>
+                        </Tooltip>
+                     </TooltipProvider>
+                  )}
+               </div>
+            </div>
+            <div className={"relative flex gap-10 "}>
+               <div className="w-full">
+                  <Label htmlFor="description">Opis</Label>
+                  <Textarea
+                     className="basis-2/3 resize-none overflow-y-hidden"
+                     id="description"
+                     placeholder="Lorem ipsum lorem ipsum"
+                     autoCapitalize="none"
+                     autoCorrect="off"
+                     disabled={isSubmitting}
+                     {...register("description")}
+                     onChange={(e) => handleChange(e)}
+                  />
+                  {errors.description && (
+                     <TooltipProvider>
+                        <Tooltip>
+                           <TooltipTrigger className="absolute bottom-2 right-3 text-red-500">
+                              <AlertCircle />
+                           </TooltipTrigger>
+                           <TooltipContent>
+                              <p>{errors.description.message}</p>
                            </TooltipContent>
                         </Tooltip>
                      </TooltipProvider>
@@ -386,5 +387,3 @@ function AddOfferForm() {
       </div>
    )
 }
-
-export default AddOfferForm
