@@ -44,7 +44,7 @@ function Multiselect({
    searchMessage,
 }: MultiselectProps) {
    return (
-      <Popover>
+      <Popover modal={true}>
          <PopoverTrigger>
             <div
                role="combobox"
