@@ -1,6 +1,9 @@
-import { randomUUID } from "crypto"
+import { ChangeEvent } from "react"
 import { clsx, type ClassValue } from "clsx"
+import { UseFormSetValue } from "react-hook-form"
 import { twMerge } from "tailwind-merge"
+
+import { FormSchema } from "@/app/(routes)/dashboard/offer-create/formSchema"
 
 export function cn(...inputs: ClassValue[]) {
    return twMerge(clsx(inputs))
@@ -38,3 +41,16 @@ export const getFormattedCurrency = (value: number) =>
       style: "currency",
       currency: "PLN",
    }).format(value)
+
+export function zipCodeRefactor(
+   e: ChangeEvent<HTMLInputElement>,
+   setValue: UseFormSetValue<FormSchema>
+) {
+   const value: string = e.target.value
+   if (/^\d{5}$/.test(e.target.value)) {
+      const firstTwo = value.slice(0, 2)
+      const lastThree = value.slice(2)
+      const changedZipCode = firstTwo.concat("-").concat(lastThree)
+      setValue("sellersZip", changedZipCode)
+   }
+}
