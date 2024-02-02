@@ -1,9 +1,10 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { PopoverClose } from "@radix-ui/react-popover"
 import { AlertCircle, ChevronDown } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn, setUrlParam } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
    Popover,
@@ -40,6 +41,8 @@ function MinMaxInput({
    minName,
    maxName,
 }: MinMaxInputProps) {
+   const router = useRouter()
+
    return (
       <Popover>
          <PopoverTrigger>
@@ -66,6 +69,12 @@ function MinMaxInput({
                      placeholder="Minimum"
                      onChange={(event) => {
                         const result = event.target.value.replace(/\D/g, "")
+                        router.push(
+                           setUrlParam(
+                              minName,
+                              result === "" ? undefined : result
+                           ).toString()
+                        )
                         setValue(minName, result)
                      }}
                   />
@@ -88,6 +97,12 @@ function MinMaxInput({
                      placeholder="Maksimum"
                      onChange={(event) => {
                         const result = event.target.value.replace(/\D/g, "")
+                        router.push(
+                           setUrlParam(
+                              maxName,
+                              result === "" ? undefined : result
+                           ).toString()
+                        )
                         setValue(maxName, result)
                      }}
                   />
@@ -110,8 +125,12 @@ function MinMaxInput({
                   className="w-full rounded-none"
                   variant={"secondary"}
                   onClick={() => {
-                     setValue(minName, undefined)
+                     const newUrl = setUrlParam(maxName, undefined)
+                     newUrl.searchParams.delete(minName)
+
+                     router.push(newUrl.toString())
                      resetField(maxName, undefined)
+                     resetField(minName, undefined)
                   }}
                >
                   Wyczyść

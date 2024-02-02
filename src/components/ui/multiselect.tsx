@@ -1,10 +1,11 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { PopoverClose } from "@radix-ui/react-popover"
 import { ChevronDown } from "lucide-react"
 import { Controller } from "react-hook-form"
 
-import { cn } from "@/lib/utils"
+import { cn, setUrlParam } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
    Command,
@@ -23,7 +24,7 @@ import { Checkbox } from "./checkbox"
 import { Label } from "./label"
 
 interface MultiselectProps {
-   items: { label: string; value: string }[]
+   items: string[]
    control: any
    name: string
    setValue: any
@@ -43,6 +44,8 @@ function Multiselect({
    notFound,
    searchMessage,
 }: MultiselectProps) {
+   const router = useRouter()
+
    return (
       <Popover modal={true}>
          <PopoverTrigger>
@@ -65,7 +68,7 @@ function Multiselect({
                   {items.map((item) => {
                      return (
                         <CommandItem
-                           key={item.value}
+                           key={item}
                            className="flex gap-2 px-0 py-0"
                         >
                            <Controller
@@ -73,40 +76,53 @@ function Multiselect({
                               name={name}
                               render={({ field }) => {
                                  const isChecked = field.value.some(
-                                    (innerField: any) =>
-                                       innerField.value == item.value
+                                    (innerField: any) => innerField == item
                                  )
                                  return (
                                     <Checkbox
                                        checked={isChecked}
                                        {...field}
-                                       id={item.value}
-                                       value={item.value}
+                                       id={item}
+                                       value={item}
                                        onCheckedChange={(checked) => {
                                           if (checked) {
                                              // If checked, add the item.value to the array
+                                             router.push(
+                                                setUrlParam(name, [
+                                                   ...field.value,
+                                                   item,
+                                                ]).toString()
+                                             )
                                              setValue(name, [
                                                 ...field.value,
                                                 item,
                                              ])
                                           } else {
                                              // If unchecked, filter out the item.value from the array
-                                             setValue(
-                                                name,
+
+                                             const filteredField =
                                                 field.value.filter(
-                                                   (innerField: any) =>
-                                                      innerField.value !==
-                                                      item.value
+                                                   (innerField: string) =>
+                                                      innerField !== item
                                                 )
+
+                                             router.push(
+                                                setUrlParam(
+                                                   name,
+                                                   filteredField.length > 0
+                                                      ? filteredField
+                                                      : undefined
+                                                ).toString()
                                              )
+                                             setValue(name, filteredField)
                                           }
                                        }}
                                     />
                                  )
                               }}
                            />
-                           <Label className="w-full py-2" htmlFor={item.value}>
-                              {item.label}
+                           <Label className="w-full py-2" htmlFor={item}>
+                              {item}
                            </Label>
                         </CommandItem>
                      )
@@ -117,6 +133,7 @@ function Multiselect({
                      className="w-full rounded-none"
                      variant={"secondary"}
                      onClick={() => {
+                        router.push(setUrlParam(name, undefined).toString())
                         resetField(name)
                      }}
                   >
