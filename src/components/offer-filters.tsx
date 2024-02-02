@@ -1,15 +1,15 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Make, Model } from "@prisma/client"
 import { PopoverClose } from "@radix-ui/react-popover"
-import axios from "axios"
 import { ChevronDown } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { cn } from "@/lib/utils"
+import { cn, setUrlParam } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
    Command,
@@ -28,18 +28,12 @@ import { Checkbox } from "./ui/checkbox"
 import { Label } from "./ui/label"
 import MinMaxInput from "./ui/min-max-input"
 import Multiselect from "./ui/multiselect"
-import { ScrollArea } from "./ui/scroll-area"
-import SingleSearchSelect from "./ui/single-search-select"
 
-const items = [
-   { label: "English", value: "en" },
-   { label: "French", value: "fr" },
-   { label: "German", value: "de" },
-   { label: "Portuguese", value: "pt" },
-   { label: "Russian", value: "ru" },
-   { label: "Japanese", value: "ja" },
-   { label: "Korean", value: "ko" },
-   { label: "Chinese", value: "zh" },
+const items = ["enf", "sdff", "sdfsd"]
+
+const sortItems = [
+   { label: "Rosnąco", value: "asc" },
+   { label: "Malejąco", value: "desc" },
 ]
 
 const rangeValidator = (min: number | undefined, max: number | undefined) => {
@@ -59,36 +53,11 @@ const formSchema = z
             value: z.string(),
          })
          .optional(),
-      brand: z
-         .object({
-            label: z.string(),
-            value: z.string(),
-         })
-         .optional(),
-      model: z
-         .object({
-            label: z.string().min(1),
-            value: z.string().min(1),
-         })
-         .optional(),
-      bodyType: z.array(
-         z.object({
-            label: z.string().min(1),
-            value: z.string().min(1),
-         })
-      ),
-      fuelType: z.array(
-         z.object({
-            label: z.string().min(1),
-            value: z.string().min(1),
-         })
-      ),
-      transmissionType: z.array(
-         z.object({
-            label: z.string().min(1),
-            value: z.string().min(1),
-         })
-      ),
+      brand: z.string().optional(),
+      model: z.string().optional(),
+      bodyType: z.array(z.string()),
+      fuelType: z.array(z.string()),
+      transmissionType: z.array(z.string()),
 
       minPrice: z.coerce.number().optional(),
       maxPrice: z.coerce.number().optional(),
@@ -147,9 +116,7 @@ interface OfferFiltersProps {
 
 export default function OfferFilters({ brandsData }: OfferFiltersProps) {
    const [brand, setBrand] = useState<undefined | string>()
-   const [modelItems, setModelItems] = useState<
-      { value: string; label: string }[]
-   >([])
+   const [modelItems, setModelItems] = useState<undefined | string[]>([])
 
    const {
       register,
@@ -169,33 +136,120 @@ export default function OfferFilters({ brandsData }: OfferFiltersProps) {
       },
    })
 
+   const router = useRouter()
+
    function onSubmit(formData: FormData) {
       console.log(formData)
    }
    const brandItems = useMemo(() => {
-      return brandsData.map((brandValue) => ({
-         label: brandValue.make,
-         value: brandValue.make,
-      }))
+      return brandsData.map((brandValue) => brandValue.make)
    }, [brandsData])
 
    useEffect(() => {
-      resetField("model")
-
       const selectedBrand = brandsData.filter((brandValue) =>
          brandValue.make === brand ? brandValue.models : null
       )
 
       const newModelItems =
          selectedBrand.length > 0
-            ? selectedBrand[0].models.map((modelValue) => ({
-                 label: modelValue.model,
-                 value: modelValue.model,
-              }))
+            ? selectedBrand[0].models.map((modelValue) => modelValue.model)
             : []
 
       setModelItems(newModelItems)
    }, [brand])
+
+   useEffect(() => {
+      const url = new URL(window.location.href)
+
+      const newMinPrice = parseInt(url.searchParams.get("minPrice") || "")
+      const newMaxPrice = parseInt(url.searchParams.get("maxPrice") || "")
+      const newMinPower = parseInt(url.searchParams.get("minPower") || "")
+      const newMaxPower = parseInt(url.searchParams.get("maxPower") || "")
+      const newMinEngineCapacity = parseInt(
+         url.searchParams.get("minEngineCapacity") || ""
+      )
+      const newMaxEngineCapacity = parseInt(
+         url.searchParams.get("maxEngineCapacity") || ""
+      )
+      const newMinMileage = parseInt(url.searchParams.get("minMileage") || "")
+      const newMaxMileage = parseInt(url.searchParams.get("maxMileage") || "")
+      const newMinManufactureYear = parseInt(
+         url.searchParams.get("minManufactureYear") || ""
+      )
+      const newMaxManufactureYear = parseInt(
+         url.searchParams.get("maxManufactureYear") || ""
+      )
+      const newModel = url.searchParams.get("model")
+      const newBodyType = url.searchParams.get("bodyType")
+      const newFuelType = url.searchParams.get("fuelType")
+      const newTransmissionType = url.searchParams.get("transmissionType")
+      const newSort = url.searchParams.get("sort")
+      const newBrand = url.searchParams.get("brand")
+
+      newMinPrice !== null && !isNaN(newMinPrice)
+         ? setValue("minPrice", newMinPrice)
+         : null
+
+      newMaxPrice !== null && !isNaN(newMaxPrice)
+         ? setValue("maxPrice", newMaxPrice)
+         : null
+
+      newMinPower !== null && !isNaN(newMinPower)
+         ? setValue("minPower", newMinPower)
+         : null
+
+      newMaxPower !== null && !isNaN(newMaxPower)
+         ? setValue("maxPower", newMaxPower)
+         : null
+
+      newMinEngineCapacity !== null && !isNaN(newMinEngineCapacity)
+         ? setValue("minEngineCapacity", newMinEngineCapacity)
+         : null
+
+      newMaxEngineCapacity !== null && !isNaN(newMaxEngineCapacity)
+         ? setValue("maxEngineCapacity", newMaxEngineCapacity)
+         : null
+
+      newMinMileage !== null && !isNaN(newMinMileage)
+         ? setValue("minMileage", newMinMileage)
+         : null
+
+      newMaxMileage !== null && !isNaN(newMaxMileage)
+         ? setValue("maxMileage", newMaxMileage)
+         : null
+
+      newMinManufactureYear !== null && !isNaN(newMinManufactureYear)
+         ? setValue("minManufactureYear", newMinManufactureYear)
+         : null
+
+      newMaxManufactureYear !== null && !isNaN(newMaxManufactureYear)
+         ? setValue("maxManufactureYear", newMaxManufactureYear)
+         : null
+
+      if (newBrand != null) {
+         setValue("brand", newBrand)
+         setBrand(newBrand)
+      }
+
+      newModel != null ? setValue("model", newModel) : null
+
+      newBodyType != null ? setValue("bodyType", newBodyType.split(",")) : null
+
+      newFuelType != null ? setValue("fuelType", newFuelType.split(",")) : null
+
+      newTransmissionType != null
+         ? setValue("transmissionType", newTransmissionType.split(","))
+         : null
+
+      newSort != null
+         ? setValue(
+              "sort",
+              sortItems.filter((sortItem) =>
+                 sortItem.value === newSort ? sortItem : null
+              )[0]
+           )
+         : null
+   }, [])
 
    return (
       <form
@@ -216,7 +270,7 @@ export default function OfferFilters({ brandsData }: OfferFiltersProps) {
                            "flex h-8 w-[160px] justify-between border-black"
                         )}
                      >
-                        <p>{field.value ? field.value.label : "Marka"}</p>
+                        <p>{field.value ? field.value : "Marka"}</p>
                         <ChevronDown className=" relative right-0 h-4 w-4 shrink-0 opacity-50" />
                      </div>
                   </PopoverTrigger>
@@ -228,23 +282,24 @@ export default function OfferFilters({ brandsData }: OfferFiltersProps) {
                         <CommandGroup className="max-h-52 overflow-y-auto">
                            {brandItems.map((item) => (
                               <CommandItem
-                                 value={item.label}
-                                 key={item.label}
+                                 value={item}
+                                 key={item}
                                  onSelect={() => {
+                                    router.push(
+                                       setUrlParam("brand", item).toString()
+                                    )
                                     setValue("brand", item)
-                                    setBrand(item.label)
+                                    resetField("model")
+                                    setBrand(item)
                                  }}
                                  className="flex gap-2 px-0 py-0"
                               >
                                  <Checkbox
-                                    checked={item.value === field.value?.value}
-                                    id={item.value}
+                                    checked={item === field.value}
+                                    id={item}
                                  />
-                                 <Label
-                                    className="w-full py-2"
-                                    htmlFor={item.value}
-                                 >
-                                    {item.label}
+                                 <Label className="w-full py-2" htmlFor={item}>
+                                    {item}
                                  </Label>
                               </CommandItem>
                            ))}
@@ -255,6 +310,12 @@ export default function OfferFilters({ brandsData }: OfferFiltersProps) {
                            className="w-full rounded-none"
                            variant={"secondary"}
                            onClick={() => {
+                              const newUrl = setUrlParam("brand", undefined)
+
+                              newUrl.searchParams.delete("model")
+
+                              router.push(newUrl.toString())
+
                               setBrand(undefined)
                               resetField("brand")
                               resetField("model")
@@ -278,16 +339,81 @@ export default function OfferFilters({ brandsData }: OfferFiltersProps) {
             )}
          />
 
-         <SingleSearchSelect
-            items={modelItems}
+         <Controller
             control={control}
             name={"model"}
-            label={"Model"}
-            setValue={setValue}
-            resetField={resetField}
-            notFound="Nie znaleziono modelu"
-            searchMessage="Wyszkuaj nazwę modelu"
-            disabled={!brand || !modelItems}
+            render={({ field }) => (
+               <Popover modal={true}>
+                  <PopoverTrigger
+                     disabled={!brand || !modelItems}
+                     className={cn(!brand || !modelItems ? "opacity-65" : null)}
+                  >
+                     <div
+                        role="combobox"
+                        className={cn(
+                           buttonVariants({ variant: "outline" }),
+                           "flex h-8 w-[160px] justify-between border-black"
+                        )}
+                     >
+                        <p>{field.value ? field.value : "Model"}</p>
+                        <ChevronDown className=" relative right-0 h-4 w-4 shrink-0 opacity-50" />
+                     </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[300px] overflow-hidden p-0">
+                     <Command>
+                        <CommandInput placeholder={"Wyszkuaj nazwę modelu"} />
+                        <CommandEmpty>{"Nie znaleziono modelu"}</CommandEmpty>
+                        <CommandGroup className="max-h-52 overflow-y-auto">
+                           {modelItems?.map((item) => (
+                              <CommandItem
+                                 value={item}
+                                 key={item}
+                                 onSelect={() => {
+                                    router.push(
+                                       setUrlParam("model", item).toString()
+                                    )
+                                    setValue("model", item)
+                                 }}
+                                 className="flex gap-2 px-0 py-0"
+                              >
+                                 <Checkbox
+                                    checked={item === field.value}
+                                    id={item}
+                                 />
+                                 <Label className="w-full py-2" htmlFor={item}>
+                                    {item}
+                                 </Label>
+                              </CommandItem>
+                           ))}
+                        </CommandGroup>
+                     </Command>
+                     <div className="flex">
+                        <Button
+                           className="w-full rounded-none"
+                           variant={"secondary"}
+                           onClick={() => {
+                              router.push(
+                                 setUrlParam("model", undefined).toString()
+                              )
+                              resetField("model")
+                           }}
+                        >
+                           Wyczyść
+                        </Button>
+                        <PopoverClose className="w-full">
+                           <div
+                              className={cn(
+                                 buttonVariants({ variant: "default" }),
+                                 "w-full rounded-none"
+                              )}
+                           >
+                              Zapisz
+                           </div>
+                        </PopoverClose>
+                     </div>
+                  </PopoverContent>
+               </Popover>
+            )}
          />
          <Multiselect
             items={items}
@@ -370,7 +496,7 @@ export default function OfferFilters({ brandsData }: OfferFiltersProps) {
             minName={"minPrice"}
             maxName={"maxPrice"}
          />
-         <SingleSearchSelect
+         {/* <SingleSearchSelect
             items={items}
             control={control}
             name={"sort"}
@@ -379,6 +505,85 @@ export default function OfferFilters({ brandsData }: OfferFiltersProps) {
             label={"Sortuj"}
             notFound={"Nie znaloeziono"}
             searchMessage={""}
+         /> */}
+         <Controller
+            control={control}
+            name={"sort"}
+            render={({ field }) => (
+               <Popover modal={true}>
+                  <PopoverTrigger>
+                     <div
+                        role="combobox"
+                        className={cn(
+                           buttonVariants({ variant: "outline" }),
+                           "flex h-8 w-[160px] justify-between border-black"
+                        )}
+                     >
+                        <p>{field.value ? field.value?.label : "Sortuj"}</p>
+                        <ChevronDown className=" relative right-0 h-4 w-4 shrink-0 opacity-50" />
+                     </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[300px] overflow-hidden p-0">
+                     <Command>
+                        <CommandInput placeholder={"Wyszkuaj nazwę sortu"} />
+                        <CommandEmpty>{"Nie znaleziono sortu"}</CommandEmpty>
+                        <CommandGroup className="max-h-52 overflow-y-auto">
+                           {sortItems?.map((item) => (
+                              <CommandItem
+                                 value={item.value}
+                                 key={item.value}
+                                 onSelect={() => {
+                                    setValue("sort", item)
+                                    router.push(
+                                       setUrlParam(
+                                          "sort",
+                                          item.value
+                                       ).toString()
+                                    )
+                                 }}
+                                 className="flex gap-2 px-0 py-0"
+                              >
+                                 <Checkbox
+                                    checked={item.label === field.value?.label}
+                                    id={item.label}
+                                 />
+                                 <Label
+                                    className="w-full py-2"
+                                    htmlFor={item.label}
+                                 >
+                                    {item.label}
+                                 </Label>
+                              </CommandItem>
+                           ))}
+                        </CommandGroup>
+                     </Command>
+                     <div className="flex">
+                        <Button
+                           className="w-full rounded-none"
+                           variant={"secondary"}
+                           onClick={() => {
+                              resetField("sort")
+                              router.push(
+                                 setUrlParam("sort", undefined).toString()
+                              )
+                           }}
+                        >
+                           Wyczyść
+                        </Button>
+                        <PopoverClose className="w-full">
+                           <div
+                              className={cn(
+                                 buttonVariants({ variant: "default" }),
+                                 "w-full rounded-none"
+                              )}
+                           >
+                              Zapisz
+                           </div>
+                        </PopoverClose>
+                     </div>
+                  </PopoverContent>
+               </Popover>
+            )}
          />
 
          <Button type="submit">Szukaj</Button>

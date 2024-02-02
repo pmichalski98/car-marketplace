@@ -38,3 +38,22 @@ export const getFormattedCurrency = (value: number) =>
       style: "currency",
       currency: "PLN",
    }).format(value)
+
+export function setUrlParam(key: string, value: any) {
+   const url = new URL(window.location.href)
+
+   const isParamInUrl = url.searchParams.has(key)
+   const isValueValid = value !== undefined
+
+   if (isParamInUrl) {
+      if (isValueValid) {
+         url.searchParams.set(key, value.toString())
+      } else {
+         url.searchParams.delete(key)
+      }
+   } else if (isValueValid) {
+      url.searchParams.append(key, value.toString())
+   }
+
+   return url
+}
