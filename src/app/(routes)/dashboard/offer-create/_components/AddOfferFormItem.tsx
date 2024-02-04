@@ -1,5 +1,6 @@
 import React, { HTMLInputTypeAttribute, InputHTMLAttributes } from "react"
 import { TargetFieldName } from "aws-sdk/clients/iot"
+import { Star } from "lucide-react"
 import {
    ControllerFieldState,
    ControllerRenderProps,
@@ -33,10 +34,12 @@ interface AddOfferFormItemProps {
       price: number
       sellersCity: string
       sellersZip: string
+      engineCapacity: number
+      enginePower: number
+      vin: string
    }>
    name:
       | "title"
-      | "color"
       | "description"
       | "mileage"
       | "transmission"
@@ -44,9 +47,14 @@ interface AddOfferFormItemProps {
       | "model"
       | "fuelType"
       | "prodYear"
+      | "engineCapacity"
+      | "enginePower"
+      | "vin"
+      | "color"
       | "price"
       | "sellersCity"
       | "sellersZip"
+
    error: FieldError | undefined
    type: HTMLInputTypeAttribute
    placeholder: string
@@ -61,18 +69,20 @@ function AddOfferFormItem({
    error,
    placeholder,
 }: AddOfferFormItemProps) {
-   type
+   const isNumber = type === "number"
+
    return (
       <>
          <Label htmlFor={name}>{title}</Label>
          <Input
             id={name}
+            maxLength={50}
             placeholder={placeholder}
             type={type}
             autoCapitalize="none"
             autoCorrect="off"
             disabled={isSubmitting}
-            {...register(name)}
+            {...register(name, { valueAsNumber: isNumber })}
          />
          {error && <ErrorTooltip errorMsg={error.message} />}
       </>

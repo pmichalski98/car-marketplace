@@ -101,16 +101,218 @@ export default function AddOfferForm() {
             noValidate
             className="flex w-full flex-col gap-5 pt-6"
          >
-            <div className=" flex space-x-12">
-               <div className={"relative basis-2/3"}>
+            <h2 className="text-2xl font-medium">Dane techniczne auta</h2>
+            <div className={"relative max-w-[500px]"}>
+               <AddOfferFormItem
+                  register={register}
+                  name="title"
+                  type="text"
+                  title="Tytuł"
+                  isSubmitting={isSubmitting}
+                  error={errors.title}
+                  placeholder="Nissan Skyline Turbo 300km JDM..."
+               />
+            </div>
+
+            <div className={"relative flex gap-10 "}>
+               <div className="w-full">
+                  <Label htmlFor="description">Opis</Label>
+                  <Textarea
+                     className="basis-2/3 resize-none overflow-y-hidden"
+                     id="description"
+                     placeholder="Lorem ipsum lorem ipsum"
+                     autoCapitalize="none"
+                     autoCorrect="off"
+                     disabled={isSubmitting}
+                     {...register("description")}
+                     onChange={(e) => handleChange(e)}
+                  />
+                  {errors.description && (
+                     <ErrorTooltip errorMsg={errors.description.message} />
+                  )}
+               </div>
+            </div>
+
+            <div className="grid items-center gap-4 sm:grid-cols-2 sm:space-y-0 md:grid-cols-4  md:space-y-0 ">
+               <div className={"relative sm:w-fit"}>
                   <AddOfferFormItem
-                     register={register}
-                     name="title"
-                     type="text"
-                     title="Tytuł"
+                     title="Marka"
                      isSubmitting={isSubmitting}
-                     error={errors.title}
-                     placeholder="Nissan Skyline Turbo 300km JDM..."
+                     register={register}
+                     name="manufacturer"
+                     type="text"
+                     error={errors.manufacturer}
+                     placeholder="Nissan"
+                  />
+               </div>
+               <div className={"relative sm:w-fit"}>
+                  <AddOfferFormItem
+                     title="Model"
+                     isSubmitting={isSubmitting}
+                     type="text"
+                     register={register}
+                     name="model"
+                     error={errors.model}
+                     placeholder="Skyline"
+                  />
+               </div>
+               <div className={"relative sm:w-fit"}>
+                  <AddOfferFormItem
+                     title="Poj. silnika (ccm)"
+                     isSubmitting={isSubmitting}
+                     type="number"
+                     register={register}
+                     name="engineCapacity"
+                     error={errors.engineCapacity}
+                     placeholder="np. 1999"
+                  />
+               </div>
+               <div className={"relative sm:w-fit"}>
+                  <AddOfferFormItem
+                     title="Moc silnika (km)"
+                     isSubmitting={isSubmitting}
+                     type="number"
+                     register={register}
+                     name="enginePower"
+                     error={errors.enginePower}
+                     placeholder="np. 220"
+                  />
+               </div>
+            </div>
+            <div className="grid items-center gap-4 sm:grid-cols-2 sm:space-y-0 md:grid-cols-4  md:space-y-0 ">
+               <div className={"relative sm:w-fit"}>
+                  <AddOfferFormItem
+                     title="Rok produkcji"
+                     isSubmitting={isSubmitting}
+                     register={register}
+                     name="prodYear"
+                     type="number"
+                     error={errors.prodYear}
+                     placeholder="1996"
+                  />
+               </div>
+               <div className={"relative sm:w-fit"}>
+                  <AddOfferFormItem
+                     title="Przebieg (km)"
+                     isSubmitting={isSubmitting}
+                     type="number"
+                     register={register}
+                     name="mileage"
+                     error={errors.mileage}
+                     placeholder="180000..."
+                  />
+               </div>
+               <div className="col-span-2 grid grid-cols-2 gap-4 sm:justify-start">
+                  <div>
+                     <div>
+                        <Label>Typ paliwa</Label>
+                        <Controller
+                           name="fuelType"
+                           control={control}
+                           render={({ field }) => (
+                              <Select {...field} onValueChange={field.onChange}>
+                                 <SelectTrigger className="max-w-[220px] sm:w-[220px] md:w-full">
+                                    <SelectValue placeholder="Inny" />
+                                 </SelectTrigger>
+                                 <SelectContent>
+                                    <SelectItem value="gas">Benzyna</SelectItem>
+                                    <SelectItem value="diesel">
+                                       Diesel
+                                    </SelectItem>
+                                    <SelectItem value="hydrogen">
+                                       Wodór
+                                    </SelectItem>
+                                    <SelectItem value="electric">
+                                       Elektryczny
+                                    </SelectItem>
+                                    <SelectItem value="other">Inny</SelectItem>
+                                 </SelectContent>
+                              </Select>
+                           )}
+                        />
+                     </div>
+                     {errors.fuelType && (
+                        <TooltipProvider>
+                           <Tooltip>
+                              <TooltipTrigger className="mr-2 mt-6 text-red-500 sm:mr-0">
+                                 <AlertCircle />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                 <p>{errors.fuelType.message}</p>
+                              </TooltipContent>
+                           </Tooltip>
+                        </TooltipProvider>
+                     )}
+                  </div>
+                  <div>
+                     <Label>Skrzynia biegów</Label>
+                     <Controller
+                        name="transmission"
+                        control={control}
+                        render={({ field }) => (
+                           <Select {...field} onValueChange={field.onChange}>
+                              <SelectTrigger className="max-w-[220px] sm:w-[220px] md:w-full">
+                                 <SelectValue placeholder="Inny" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                 <SelectItem value="manual">
+                                    Manualna
+                                 </SelectItem>
+                                 <SelectItem value="automatic">
+                                    Automatyczna
+                                 </SelectItem>
+                                 <SelectItem value="other">Inna</SelectItem>
+                              </SelectContent>
+                           </Select>
+                        )}
+                     />
+                  </div>
+                  {errors.transmission && (
+                     <TooltipProvider>
+                        <Tooltip>
+                           <TooltipTrigger className="mt-6 text-red-500">
+                              <AlertCircle />
+                           </TooltipTrigger>
+                           <TooltipContent>
+                              <p>{errors.transmission.message}</p>
+                           </TooltipContent>
+                        </Tooltip>
+                     </TooltipProvider>
+                  )}
+               </div>
+            </div>
+            <div className={"relative sm:w-fit"}>
+               <AddOfferFormItem
+                  title="Numer nadwozia (VIN)"
+                  type="text"
+                  isSubmitting={isSubmitting}
+                  register={register}
+                  name="vin"
+                  error={errors.vin}
+                  placeholder="np. JMZNB18MC1294351X"
+               />
+            </div>
+            <div className={"relative sm:w-fit"}>
+               <AddOfferFormItem
+                  title="Kolor"
+                  type="text"
+                  isSubmitting={isSubmitting}
+                  register={register}
+                  name="color"
+                  error={errors.color}
+                  placeholder="Biały..."
+               />
+            </div>
+            <div className="space-y-4 sm:flex sm:gap-3 sm:space-y-0">
+               <div className={"relative sm:w-fit"}>
+                  <AddOfferFormItem
+                     title="Cena"
+                     type="number"
+                     isSubmitting={isSubmitting}
+                     register={register}
+                     name="price"
+                     error={errors.price}
+                     placeholder="36000"
                   />
                </div>
                <div className={"relative"}>
@@ -143,166 +345,6 @@ export default function AddOfferForm() {
                      <ErrorTooltip errorMsg={errors.sellersZip.message} />
                   )}
                </div>
-            </div>
-            <div className={"relative flex gap-10 "}>
-               <div className="w-full">
-                  <Label htmlFor="description">Opis</Label>
-                  <Textarea
-                     className="basis-2/3 resize-none overflow-y-hidden"
-                     id="description"
-                     placeholder="Lorem ipsum lorem ipsum"
-                     autoCapitalize="none"
-                     autoCorrect="off"
-                     disabled={isSubmitting}
-                     {...register("description")}
-                     onChange={(e) => handleChange(e)}
-                  />
-                  {errors.description && (
-                     <ErrorTooltip
-                        classNames="top-0"
-                        errorMsg={errors.description.message}
-                     />
-                  )}
-               </div>
-            </div>
-            <div className={"relative w-fit"}>
-               <AddOfferFormItem
-                  title="Przebieg (km)"
-                  isSubmitting={isSubmitting}
-                  type="number"
-                  register={register}
-                  name="mileage"
-                  error={errors.mileage}
-                  placeholder="180000..."
-               />
-            </div>
-            <div className="items-center space-y-4 md:flex md:space-x-10  md:space-y-0 ">
-               <div className={"relative"}>
-                  <AddOfferFormItem
-                     title="Marka"
-                     isSubmitting={isSubmitting}
-                     register={register}
-                     name="manufacturer"
-                     type="text"
-                     error={errors.manufacturer}
-                     placeholder="Nissan"
-                  />
-               </div>
-               <div className={"relative"}>
-                  <AddOfferFormItem
-                     title="Model"
-                     isSubmitting={isSubmitting}
-                     register={register}
-                     name="model"
-                     error={errors.model}
-                     placeholder="Skyline"
-                  />
-               </div>
-            </div>
-            <div className={"relative flex gap-2"}>
-               <div>
-                  <Label>Typ paliwa</Label>
-                  <Controller
-                     name="fuelType"
-                     control={control}
-                     render={({ field }) => (
-                        <Select {...field} onValueChange={field.onChange}>
-                           <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="Inny" />
-                           </SelectTrigger>
-                           <SelectContent>
-                              <SelectItem value="gas">Benzyna</SelectItem>
-                              <SelectItem value="diesel">Diesel</SelectItem>
-                              <SelectItem value="hydrogen">Wodór</SelectItem>
-                              <SelectItem value="electric">
-                                 Elektryczny
-                              </SelectItem>
-                              <SelectItem value="other">Inny</SelectItem>
-                           </SelectContent>
-                        </Select>
-                     )}
-                  />
-               </div>
-               {errors.fuelType && (
-                  <TooltipProvider>
-                     <Tooltip>
-                        <TooltipTrigger className="mt-6 text-red-500">
-                           <AlertCircle />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                           <p>{errors.fuelType.message}</p>
-                        </TooltipContent>
-                     </Tooltip>
-                  </TooltipProvider>
-               )}
-            </div>
-            <div className={"relative flex gap-2"}>
-               <div>
-                  <Label>Skrzynia biegów</Label>
-                  <Controller
-                     name="transmission"
-                     control={control}
-                     render={({ field }) => (
-                        <Select {...field} onValueChange={field.onChange}>
-                           <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="Inny" />
-                           </SelectTrigger>
-                           <SelectContent>
-                              <SelectItem value="manual">Manualna</SelectItem>
-                              <SelectItem value="automatic">
-                                 Automatyczna
-                              </SelectItem>
-                              <SelectItem value="other">Inna</SelectItem>
-                           </SelectContent>
-                        </Select>
-                     )}
-                  />
-               </div>
-               {errors.transmission && (
-                  <TooltipProvider>
-                     <Tooltip>
-                        <TooltipTrigger className="mt-6 text-red-500">
-                           <AlertCircle />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                           <p>{errors.transmission.message}</p>
-                        </TooltipContent>
-                     </Tooltip>
-                  </TooltipProvider>
-               )}
-            </div>
-            <div className={"relative w-fit"}>
-               <AddOfferFormItem
-                  title="Rok produkcji"
-                  isSubmitting={isSubmitting}
-                  register={register}
-                  name="prodYear"
-                  type="number"
-                  error={errors.prodYear}
-                  placeholder="1996"
-               />
-            </div>
-            <div className={"relative w-fit"}>
-               <AddOfferFormItem
-                  title="Kolor"
-                  type="text"
-                  isSubmitting={isSubmitting}
-                  register={register}
-                  name="color"
-                  error={errors.color}
-                  placeholder="Biały..."
-               />
-            </div>
-            <div className={"relative w-fit"}>
-               <AddOfferFormItem
-                  title="Cena"
-                  type="number"
-                  isSubmitting={isSubmitting}
-                  register={register}
-                  name="price"
-                  error={errors.price}
-                  placeholder="36000"
-               />
             </div>
             {/* Add more fields as needed */}
             <Button>Potwierdź</Button>
