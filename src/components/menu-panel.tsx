@@ -60,7 +60,7 @@ function MenuPanel({ brandsData }: MenuPanelProps) {
       },
       {
          label: "Dodaj ogłoszenie",
-         href: "/",
+         href: "/dashboard/offer-create",
       },
       {
          label: "Kontakt",

@@ -30,7 +30,7 @@ const SortableItem = ({
 
    return (
       <div
-         className={"relative float-left m-2 aspect-square size-60"}
+         className={"relative float-left m-2 aspect-square md:size-52 "}
          ref={setNodeRef}
          style={style}
          {...props}
@@ -39,7 +39,7 @@ const SortableItem = ({
             src={path}
             alt="added image"
             fill
-            className="object-cover object-center"
+            className=" object-cover object-center"
             {...attributes}
             {...listeners}
          />
@@ -49,7 +49,7 @@ const SortableItem = ({
             </Badge>
          )}
          <Badge className="absolute bottom-2 left-2" variant={"secondary"}>
-            Zdjęcie będzie pokazane jako {index + 1}
+            Zdjęcie nr {index + 1}
          </Badge>
          <Button
             variant={"destructive"}
